@@ -27,11 +27,11 @@ class UsedDegree(models.Model):
 
 
 class EnterExit(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='enter_exit')
     enter_time = models.DateTimeField()
-    exit_time = models.DateTimeField()
-    
-
+    exit_time = models.DateTimeField(null=True, blank=True)
+        
+        
 class TimePrice(models.Model):
     price = models.DecimalField(max_digits=60, decimal_places=2)
 
