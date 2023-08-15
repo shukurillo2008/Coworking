@@ -53,5 +53,47 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md">
+        <div class="card">
+
+            <div class="card-header">
+                <h5 class="card-title">Used Degrees</h5>
+            </div>
+            <div class="card-body">
+                <div class="example-container">
+                    <div class="example-content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">№</th>
+                                    <th scope="col">Enter</th>
+                                    <th scope="col">Exit</th>
+                                    <th scope="col">Used degree</th>
+                                    <th scope="col">Before</th>
+                                    <th scope="col"> After </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for degree in degree %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{degree.enter_exit.enter_time}}</td>
+                                    <td>{{degree.enter_exit.exit_time}}</td>
+                                    <td>{{degree.used_degree}}</td>
+                                    <td>{{degree.before_degree}}</td>
+                                    <td>{{degree.after_degree}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+    </div>
+</div>
 
 {% endblock %}
