@@ -9,4 +9,8 @@ urlpatterns = [
     path('search/student/', views.search_students, name='search_url'),
     path('enterexit/', views.enter_exit, name='enter_exit_url'),
     path('error/', views.error, name='error_url'),
+    path('index/', views.index, name='index_url'),
+    path('worker/edit/<int:id>', views.worker_edit, name='worker_edit_url'),
+    path('worker/create', views.worker_create, name='worker_create_url'),
+    path('worker/delete', views.worker_delete, name='worker_delete_url')
 ]

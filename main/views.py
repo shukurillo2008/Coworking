@@ -4,6 +4,44 @@ from . import models
 from datetime import datetime
 from django.utils import timezone
 from decimal import Decimal 
+from django.contrib.auth.models import User
+
+
+def index(request):
+    student = models.Student.objects.all()
+    visit = models.EnterExit.objects.all()
+    worker = User.objects.filter(is_superuser=False)
+    visits_all = 0
+    visits_today = 0
+    used_degree = 0
+    used_degree_all = 0
+    not_used_degree = 0
+    students = student.count()
+
+    for degree in models.UsedDegree.objects.all():
+        used_degree_all += degree.used_degree
+        if degree.created_time.day == timezone.now().day and degree.created_time.year == timezone.now().year:
+            used_degree += degree.used_degree
+
+    for degree in student:
+        not_used_degree += degree.degree
+
+    for visit in visit:
+        visits_all += 1
+        if visit.enter_time.day == timezone.now().day and visit.enter_time.year == timezone.now().year:
+            visits_today += 1
+
+    context = {
+        'students':students,
+        'visits_today':visits_today,
+        'visits_all':visits_all,
+        'used_degree':used_degree,
+        'used_degree_all':used_degree_all,
+        'not_used_degree':not_used_degree,
+        'workers':worker
+    }
+
+    return render(request, 'dashboard.html', context)
 
 
 def studen_list(request):
@@ -128,3 +166,37 @@ def enter_exit(request):
 
 def error(request):
     return render(request, 'error.html')
+
+
+def worker_edit(request, id):
+    if request.method == 'POST':
+        worker = User.objects.get(id = id)
+        worker.username = request.POST.get('username')
+        worker.password = request.POST.get('password')
+        worker.save()
+
+    worker = User.objects.get(id = id)
+    context = {
+        'worker': worker
+    }
+    return render(request, 'worker_detail.html', context)
+
+
+def worker_create(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    user = User.objects.create_user(
+        username=username, 
+        password=password,
+        is_staff=True
+        )
+    messages.success(request, 'Created successfully!')
+    return redirect('index_url')
+
+
+def worker_delete(request):
+    worker_id = request.POST.get('worker_id')
+    User.objects.get(id=worker_id).delete()
+    messages.success(request, 'Deleted successfully')
+    return redirect('index_url')

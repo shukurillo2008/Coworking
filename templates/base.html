@@ -56,50 +56,13 @@
                         Apps
                     </li>
                     <li>
-                        <a href="index.html"><i class="material-icons-two-tone">dashboard</i>Dashboard</a>
+                        <a href="{% url 'index_url' %}"><i class="material-icons-two-tone">dashboard</i>Dashboard</a>
                     </li>
                     <li>
-                        <a href="{% url 'students_url' %}"><i class="material-icons-two-tone">sentiment_satisfied_alt</i>Students</a>
+                        <a href="{% url 'students_url' %}"><i class="material-icons-two-tone">groups</i>Students</a>
                     </li>
                     <li>
-                        <a href="{% url 'enter_exit_url' %}"><i class="material-icons-two-tone">calendar_today</i>Enter-Exit</a>
-                    </li>
-                    <li>
-                        <a href="file-manager.html"><i class="material-icons-two-tone">cloud_queue</i>File Manager</a>
-                    </li>
-                    <li>
-                        <a href="todo.html"><i class="material-icons-two-tone">done</i>Todo</a>
-                    </li>
-                    <li>
-                        <a href=""><i class="material-icons-two-tone">star</i>Pages<i class="material-icons has-sub-menu">keyboard_arrow_right</i></a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a href="pricing.html">Pricing</a>
-                            </li>
-                            <li>
-                                <a href="invoice.html">Invoice</a>
-                            </li>
-                            <li>
-                                <a href="settings.html">Settings</a>
-                            </li>
-                            <li>
-                                <a href="#">Authentication<i class="material-icons has-sub-menu">keyboard_arrow_right</i></a>
-                                <ul class="sub-menu">
-                                    <li>
-                                        <a href="sign-in.html">Sign In</a>
-                                    </li>
-                                    <li>
-                                        <a href="sign-up.html">Sign Up</a>
-                                    </li>
-                                    <li>
-                                        <a href="lock-screen.html">Lock Screen</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="error.html">Error</a>
-                            </li>
-                        </ul>
+                        <a href="{% url 'enter_exit_url' %}"><i class="material-icons-two-tone">subdirectory_arrow_left</i>Enter-Exit</a>
                     </li>
                 </ul>
             </div>
