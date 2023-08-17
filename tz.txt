@@ -55,8 +55,8 @@ dashboard
 user edit
 
 
-xlsx
-xls
+xlsx/xls
+
 
 without login_required
 page {

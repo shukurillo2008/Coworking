@@ -5,8 +5,13 @@ from datetime import datetime
 from django.utils import timezone
 from decimal import Decimal 
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+import qrcode
+from django.core.files.base import ContentFile
+import io
 
-
+@login_required(login_url='login_url')
 def index(request):
     student = models.Student.objects.all()
     visit = models.EnterExit.objects.all()
@@ -45,6 +50,7 @@ def index(request):
     return render(request, 'dashboard.html', context)
 
 
+@login_required(login_url='login_url')
 def studen_list(request):
     student = models.Student.objects.all().order_by('-origin_id')
     context = {
@@ -53,24 +59,32 @@ def studen_list(request):
     return render(request, 'student_list.html', context)
 
 
+@login_required(login_url='login_url')
 def create_student(request):
-    try:
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        origin_id = request.POST['origin_id']
+    # try:
+    first_name = request.POST['first_name']
+    last_name = request.POST['last_name']
+    origin_id = request.POST['origin_id']
 
-        models.Student.objects.create(
-            first_name = first_name,
-            last_name = last_name,
-            origin_id = origin_id,
-        )
-        messages.success(request, 'Created successfully!')
-    except: 
-        messages.warning(request, 'This ID is Used or Some thing went wrong =(')
+    qr_image = qrcode.make(origin_id)
+    image_buffer = io.BytesIO()
+    qr_image.save(image_buffer, format='PNG')
+
+    student = models.Student.objects.create(
+        first_name=first_name,
+        last_name=last_name,
+        origin_id=origin_id
+    )
+
+    student.qr_code.save(f'qr_{origin_id}.png', ContentFile(image_buffer.getvalue()), save=True)
+    messages.success(request, 'Created successfully!')
+    # except: 
+        # messages.warning(request, 'This ID is Used or Some thing went wrong =(')
         
     return redirect('students_url')
 
 
+@login_required(login_url='login_url')
 def student_edit(request, id):
     if request.method == 'POST':
         first_name = request.POST['first_name']
@@ -89,14 +103,22 @@ def student_edit(request, id):
         return redirect('student_edit_url',origin_id)
     else:
         student = models.Student.objects.get(origin_id=id)
-        used_degree = models.UsedDegree.objects.filter(student = student).order_by('-id')
+        used_degree = models.UsedDegree.objects.filter(student=student).order_by('-id')
+
+        page_number = request.GET.get('page', 1)
+        items_per_page = 10  
+        paginator = Paginator(used_degree, items_per_page)
+        page_obj = paginator.get_page(page_number)
+
         context = {
             'student': student,
-            'degree': used_degree
+            'degree': page_obj,
         }
+
     return render(request, 'student_detail.html', context)
 
 
+@login_required(login_url='login_url')
 def student_delete(request):
     origin_id = request.POST.get('origin_id')
     student = models.Student.objects.get(origin_id=origin_id)
@@ -106,6 +128,7 @@ def student_delete(request):
     return redirect('students_url')
 
 
+@login_required(login_url='login_url')
 def search_students(request):
     search_student = request.GET.get('search')
     if search_student:
@@ -169,6 +192,7 @@ def error(request):
     return render(request, 'error.html')
 
 
+@login_required(login_url='login_url')
 def worker_edit(request, id):
     if request.method == 'POST':
         worker = User.objects.get(id = id)
@@ -183,6 +207,7 @@ def worker_edit(request, id):
     return render(request, 'worker_detail.html', context)
 
 
+@login_required(login_url='login_url')
 def worker_create(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
@@ -196,6 +221,7 @@ def worker_create(request):
     return redirect('index_url')
 
 
+@login_required(login_url='login_url')
 def worker_delete(request):
     worker_id = request.POST.get('worker_id')
     User.objects.get(id=worker_id).delete()
@@ -203,6 +229,7 @@ def worker_delete(request):
     return redirect('index_url')
 
 
+@login_required(login_url='login_url')
 def change_price(request):
     try:
         price = request.POST.get('price')
@@ -216,19 +243,24 @@ def change_price(request):
         return redirect('index_url')
     
 
+@login_required(login_url='login_url')
 def add_degree(request):
     try:
-        degree = request.POST.get('degree')
-        student_id = request.POST.get('origin_id')
+        degree = Decimal(request.POST.get('degree'))
+        student_id = int(request.POST.get('origin_id'))
 
         student = models.Student.objects.get(origin_id=student_id)
-        models.AddedDegree.objects.create(
-            student = student,
-            before_degree = student.degree,
-            add_degree = degree,
-            after_degree = student.degree + Decimal(str(degree))
-            )
-        student.degree += degree
+        old_degree = student.degree
+        new_degree = old_degree + degree
+
+        added_degree = models.AddedDegree.objects.create( 
+            student=student,
+            before_degree=old_degree,
+            added_degree=degree, 
+            after_degree=new_degree
+        )
+
+        student.degree = new_degree
         student.save()
         messages.success(request, 'Added successfully!')
     except:
