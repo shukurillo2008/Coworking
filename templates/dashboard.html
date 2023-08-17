@@ -8,6 +8,16 @@
         </div>
     </div>
 </div>
+{% if messages %}
+    {% for message in messages %}
+    {% if message.tags %}
+    <div class="alert alert-{{ message.tags }}" role="alert">
+        <span> {{ message }} </span>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+{% endif %}
 <div class="row">
 
     <div class="col-xl-4">
@@ -116,17 +126,13 @@
             <h1>Add Worker</h1>
         </div>
     </div>
-</div>
-{% if messages %}
-    {% for message in messages %}
-    {% if message.tags %}
-    <div class="alert alert-{{ message.tags }}" role="alert">
-        <span> {{ message }} </span>
+    <div class="col">
+        <div class="page-description">
+            <h1>Change price</h1>
+        </div>
     </div>
-    {% endif %}
-    {% endfor %}
+</div>
 
-{% endif %}
 <div class="row">
     <div class="col">
         <div class="tab-pane fade show active">
@@ -142,6 +148,27 @@
                                 <div class="col-md">
                                     <label for="settingsInputLastName" class="form-label">Password</label>
                                     <input type="password" class="form-control" name="password" required>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary m-t-sm">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="tab-pane fade show active">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{% url 'change_price_url' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row m-t-lg">
+                                <div class="col-md">
+                                    <label for="settingsInputFirstName" class="form-label">Price per Hour</label>
+                                    <input type="number" class="form-control"  name="price" value="{{price.price}}" required>
                                 </div>
                             </div>
                             <div class="col">
@@ -192,3 +219,5 @@
 </div>
 
 {% endblock %}
+
+<!-- <a href="{% url 'worker_edit_url' worker.id %}"></a> -->

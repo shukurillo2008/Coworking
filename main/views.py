@@ -38,7 +38,8 @@ def index(request):
         'used_degree':used_degree,
         'used_degree_all':used_degree_all,
         'not_used_degree':not_used_degree,
-        'workers':worker
+        'workers':worker,
+        'price':models.TimePrice.objects.last()
     }
 
     return render(request, 'dashboard.html', context)
@@ -200,3 +201,36 @@ def worker_delete(request):
     User.objects.get(id=worker_id).delete()
     messages.success(request, 'Deleted successfully')
     return redirect('index_url')
+
+
+def change_price(request):
+    try:
+        price = request.POST.get('price')
+        price_time = models.TimePrice.objects.last()
+        price_time.price = price
+        price_time.save()
+        messages.success(request, 'Saved successfully!')
+        return redirect('index_url')
+    except:
+        messages.warning(request, 'some thing went wrong')
+        return redirect('index_url')
+    
+
+def add_degree(request):
+    try:
+        degree = request.POST.get('degree')
+        student_id = request.POST.get('origin_id')
+
+        student = models.Student.objects.get(origin_id=student_id)
+        models.AddedDegree.objects.create(
+            student = student,
+            before_degree = student.degree,
+            add_degree = degree,
+            after_degree = student.degree + Decimal(str(degree))
+            )
+        student.degree += degree
+        student.save()
+        messages.success(request, 'Added successfully!')
+    except:
+        messages.warning(request, 'NOt added, some thing went wrong =(') 
+    return redirect('student_edit_url',student_id)

@@ -12,5 +12,7 @@ urlpatterns = [
     path('index/', views.index, name='index_url'),
     path('worker/edit/<int:id>', views.worker_edit, name='worker_edit_url'),
     path('worker/create', views.worker_create, name='worker_create_url'),
-    path('worker/delete', views.worker_delete, name='worker_delete_url')
+    path('worker/delete', views.worker_delete, name='worker_delete_url'),
+    path('price/change', views.change_price, name='change_price_url'),
+    path('student/degree/add', views.add_degree, name='add_degree_url'),
 ]
