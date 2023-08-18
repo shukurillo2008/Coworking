@@ -59,7 +59,15 @@
                         <a href="{% url 'index_url' %}"><i class="material-icons-two-tone">dashboard</i>Dashboard</a>
                     </li>
                     <li>
-                        <a href="{% url 'students_url' %}"><i class="material-icons-two-tone">groups</i>Students</a>
+                        <a href=""><i class="material-icons-two-tone">groups</i>Students<i class="material-icons has-sub-menu">keyboard_arrow_right</i></a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="{% url 'students_url' %}">students list</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'student_create_url' %}">student create</a>
+                            </li>
+                        </ul>
                     </li>
                     <li>
                         <a href="{% url 'enter_exit_url' %}"><i class="material-icons-two-tone">subdirectory_arrow_left</i>Enter-Exit</a>

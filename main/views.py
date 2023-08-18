@@ -1,15 +1,13 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from . import models
-from datetime import datetime
 from django.utils import timezone
 from decimal import Decimal 
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-import qrcode
-from django.core.files.base import ContentFile
-import io
+import xlrd
+import openpyxl
 
 @login_required(login_url='login_url')
 def index(request):
@@ -51,37 +49,111 @@ def index(request):
 
 
 @login_required(login_url='login_url')
-def studen_list(request):
-    student = models.Student.objects.all().order_by('-origin_id')
+def student_list(request):
+    students = models.Student.objects.all().order_by('-degree')
+    items_per_page = 10 
+    paginator = Paginator(students, items_per_page)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
     context = {
-        'students': student
+        'page': page,
     }
     return render(request, 'student_list.html', context)
 
 
 @login_required(login_url='login_url')
 def create_student(request):
-    # try:
-    first_name = request.POST['first_name']
-    last_name = request.POST['last_name']
-    origin_id = request.POST['origin_id']
+    if request.method == 'POST':
+        try:
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            origin_id = request.POST['origin_id']
 
-    qr_image = qrcode.make(origin_id)
-    image_buffer = io.BytesIO()
-    qr_image.save(image_buffer, format='PNG')
+            # qr_image = qrcode.make(origin_id)
+            # image_buffer = io.BytesIO()
+            # qr_image.save(image_buffer, format='PNG')
 
-    student = models.Student.objects.create(
-        first_name=first_name,
-        last_name=last_name,
-        origin_id=origin_id
-    )
+            student = models.Student.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                origin_id=origin_id
+            )
 
-    student.qr_code.save(f'qr_{origin_id}.png', ContentFile(image_buffer.getvalue()), save=True)
-    messages.success(request, 'Created successfully!')
-    # except: 
-        # messages.warning(request, 'This ID is Used or Some thing went wrong =(')
+            # student.qr_code.save(f'qr_{origin_id}.png', ContentFile(image_buffer.getvalue()), save=True)
+            messages.success(request, 'Created successfully!')
+        except: 
+            messages.warning(request, 'This ID is Used or Some thing went wrong =(')
+        return redirect('students_url')
+    else:
+        return render(request, 'students_create.html')
+
+
+@login_required(login_url='login_url')
+def create_student_by_file(request):
+    file = request.FILES.get("file")
+    f = models.Files.objects.create(file=file)
+    
+    if f.file.name.endswith('xls'):
+        book = xlrd.open_workbook(file_contents=f.file.read())
+        sh = book.sheet_by_index(0)
+
+        new_students = []
+
+        for row_num in range(1, sh.nrows):
+
+            row = sh.row_values(row_num)
+            origin_id = row[0]
+            first_name = row[1]
+            last_name = row[2]
+            degree = row[3]
+            
+            try:
+                student = models.Student.objects.get(origin_id=origin_id)
+                student.first_name = first_name
+                student.last_name = last_name
+                if degree:
+                    student.degree = degree
+                student.save()
+            except:
+                new_students.append(
+                    models.Student.objects.create(first_name = first_name, last_name = last_name, origin_id = origin_id, degree = degree)
+                )
+        if new_students:
+            models.Student.objects.bulk_create(new_students)
+
+    elif f.file.name.endswith('.xlsx'):
+        book = openpyxl.load_workbook(f.file)
+        sh = list(book.worksheets[0].iter_rows(values_only=True))
         
-    return redirect('students_url')
+        new_students = [] 
+        
+        for up, row in enumerate(sh):
+            if up == 0:
+                continue
+            
+            origin_id = row[0]
+            
+            if isinstance(origin_id, int):
+                try:
+                    student = models.Student.objects.get(origin_id=origin_id)
+                    student.first_name = row[1]
+                    student.last_name = row[2]
+                    if row[3] is not None: 
+                        student.degree = row[3]
+                    student.save()
+                except:
+                    if row[3] is not None:
+                        new_students.append(
+                            models.Student(first_name=row[1], last_name=row[2], origin_id=origin_id, degree=row[3])
+                        )
+        if new_students:
+            models.Student.objects.bulk_create(new_students)
+            messages.success(request, 'created successfully')
+    else:
+        messages.error(request, 'file format must be xlsx or xls')
+                        
+    return redirect("students_url")
 
 
 @login_required(login_url='login_url')

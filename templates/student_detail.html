@@ -11,11 +11,6 @@
             <h4>Degree: {{student.degree}}</h4>
         </div>
     </div>
-    <div class="col">
-        <div class="page-description">
-            <img src="{{student.qr_code.url}}" alt="" class="img-fluid">
-        </div>
-    </div>
 </div>
 
 {% if messages %}
@@ -32,7 +27,7 @@
 
 <div class="row">
 
-    <div class="col-md-6">
+    <div class="col">
         <div class="tab-pane fade show active" id="account-info" role="tabpanel" aria-labelledby="account-info-tab">
             <div class="card">
                 <div class="card-body">
@@ -62,30 +57,6 @@
                                     <input type="hidden" value="{{student.origin_id}}" name="origin_id">
                                     <button type="submit" class="btn btn-danger m-t-sm">Delete</button>
                                 </form>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="tab-pane fade show active" id="add-degree" role="tabpanel" aria-labelledby="add-degree-tab">
-            <div class="card">
-                <div class="card-body">
-                    <form action="{% url 'add_degree_url'%}" method="post">
-                        {% csrf_token %}
-                        <div class="row m-t-lg">
-                            <div class="col">
-                                <label for="settingsInputDegree" class="form-label">Add degree</label>
-                                <input type="number" class="form-control" name="degree">
-                                <input type="hidden" class="form-control" name="origin_id" value="{{student.origin_id}}">
-                            </div>
-                        </div>
-                        <div class="row m-t-lg">
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary m-t-sm">Update</button>
                             </div>
                         </div>
                     </form>

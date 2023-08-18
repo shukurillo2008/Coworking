@@ -6,7 +6,7 @@ class Student(models.Model):
     last_name = models.CharField(max_length=255)
     origin_id = models.IntegerField(unique=True)
     degree = models.DecimalField(max_digits=60, decimal_places=2, default=0)
-    qr_code = models.ImageField(upload_to='user_qr_code/')
+    # qr_code = models.ImageField(upload_to='user_qr_code/')
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name} {self.origin_id}"
@@ -38,4 +38,14 @@ class UsedDegree(models.Model):
 
 class TimePrice(models.Model):
     price = models.DecimalField(max_digits=60, decimal_places=2)
+
+class Files(models.Model):
+    file = models.FileField(upload_to='excell/')
+
+class CompanyComponent(models.Model):
+    logo = models.ImageField(upload_to='company_components/')
+    company_name = models.CharField(max_length=255)
+    about = models.TextField(blank=True, null=True)
+
+
 

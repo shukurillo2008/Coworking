@@ -14,68 +14,6 @@
 <div class="row">
     <div class="col">
         <div class="page-description">
-            <h1>Add Student</h1>
-        </div>
-    </div>
-    <div class="col">
-        <div class="page-description">
-            <h1>Add Students With table</h1>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col">
-        <div class="tab-pane fade show active">
-                <div class="card">
-                    <div class="card-body">
-                        <form action="{% url 'student_create_url' %}" method="post">
-                            {% csrf_token %}
-                            <div class="row m-t-lg">
-                                <div class="col-md">
-                                    <label for="settingsInputFirstName" class="form-label">First Name</label>
-                                    <input type="text" class="form-control"  name="first_name" required>
-                                </div>
-                                <div class="col-md">
-                                    <label for="settingsInputLastName" class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" name="last_name" required>
-                                </div>
-                                <div class="col-md">
-                                    <label for="settingsInputLastName" class="form-label">Add ID</label>
-                                    <input type="number" class="form-control" name="origin_id" required>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary m-t-sm">Submit</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="tab-pane fade show active">
-                <div class="card">
-                    <div class="card-body">
-                        <form action="{% url 'student_create_url' %}" method="post">
-                            {% csrf_token %}
-                            <div class="row m-t-lg">
-                                <div class="col-md">
-                                    <label for="settingsInputFirstName" class="form-label">xlsx/xls</label>
-                                    <input type="file" class="form-control"  name="first_name" required>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary m-t-sm">Submit</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col">
-        <div class="page-description">
             <h1>Students</h1>
         </div>
     </div>
@@ -83,11 +21,8 @@
 <div class="row">
     <div class="col">
         <div class="card">
-            <div class="card-header">
-                <h5 class="card-title">Basic</h5>
-            </div>
             <div class="card-body">
-                <table id="datatable1" class="display" style="width:100%">
+                <table class="table" style="width:100%">
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -98,7 +33,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for student in students %}
+                        {% for student in page %}
                         <tr>
                             <td>{{student.origin_id}}</td>
                             <td><a href="{% url 'student_edit_url' student.origin_id%}">{{student.first_name}} {{student.last_name}}</a></td>
@@ -121,7 +56,45 @@
                             <th>Degrees</th>
                         </tr>
                     </tfoot>
+
+
+                    
                 </table>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {% if page.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1" aria-label="First">
+                                    <span aria-hidden="true">««</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page.previous_page_number }}" aria-label="Previous">
+                                    <span aria-hidden="true">«</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                
+                        {% for num in page.paginator.page_range %}
+                            <li class="page-item {% if num == page.number %}active{% endif %}">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endfor %}
+                
+                        {% if page.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">»</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page.paginator.num_pages }}" aria-label="Last">
+                                    <span aria-hidden="true">»»</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>

@@ -50,13 +50,13 @@
                 {% csrf_token %}
                 <div class="auth-credentials m-b-xxl">
                     <label class="form-label">First name</label><br>
-                    <input type="text" class="form-control m-b-md" value="{{student.first_name}}" disabled>
+                    <input type="text" class="form-control m-b-md" disabled>
     
                     <label class="form-label">Last name</label><br>
-                    <input type="text" class="form-control m-b-md" value="{{student.last_name}}" disabled>
+                    <input type="text" class="form-control m-b-md" disabled>
     
                     <label class="form-label">ID</label>
-                    <input type="number" class="form-control m-b-md" value="{{student.origin_id}}" name="origin_id">
+                    <input type="number" class="form-control m-b-md" id="user_id" name="origin_id">
                 </div>
     
                 <div class="auth-submit">
@@ -82,5 +82,32 @@
     <script src="{% static 'assets/plugins/pace/pace.min.js' %}"></script>
     <script src="{% static 'assets/js/main.min.js' %}"></script>
     <script src="{% static 'assets/js/custom.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            $("#user_id").on("paste", function() {
+                setTimeout(function() {
+                    dataToSend = {
+                        "user_id": document.getElementById("user_id").value
+                    }
+                    $.ajax({
+                        url: "{% url 'enter_exit_url' %}", // Replace with your actual backend URL
+                        type: "POST", // Use "GET", "POST", or other HTTP method
+                        data: dataToSend, // Data to send to the backend
+                        success: function(response) {
+                            console.log("Response from server:", response);
+                            // Handle the response from the server here
+                            if (in_out===true){
+                                 
+                            }
+                        },
+                        error: function(error) {
+                        }
+                    });
+                }, 1000); // 3000 milliseconds = 3 seconds
+            });
+        });
+    </script>
+
+    
 </body>
 </html>
