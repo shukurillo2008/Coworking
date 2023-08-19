@@ -46,11 +46,12 @@
                 <a href="{% url 'students_url' %}" class="logo-icon"><span class="logo-text">Coworking</span></a>
                 <div class="sidebar-user-switcher user-activity-online">
                     <a href="#">
-                        <span class="user-info-text">{{request.user.username}}<br><span class="user-state-info">{% if request.user.is_superuser == True %} Superadmin {% else %} Admin {% endif %}</span></span>
+                        <span class="user-info-text">{{request.user.username}}<br><span class="user-state-info">{% if request.user.is_superuser == True %} Superadmin {% elif request.user.is_staff == True %} Admin {% else %} Guest {% endif %}</span></span>
                     </a>
                 </div>
             </div>
             <div class="app-menu">
+                {% if request.user.is_authenticated %}
                 <ul class="accordion-menu">
                     <li class="sidebar-title">
                         Apps
@@ -73,12 +74,13 @@
                         <a href="{% url 'enter_exit_url' %}"><i class="material-icons-two-tone">subdirectory_arrow_left</i>Enter-Exit</a>
                     </li>
                 </ul>
+                {% endif %}
             </div>
         </div>
         <div class="app-container">
             <div class="search">
-                <form method="get" action="{% url 'search_url' %}">
-                    <input class="form-control" type="text" placeholder="Pleace search with ID " aria-label="Search" name="search">
+                <form method="get" action="{% url 'students_url' %}">
+                    <input class="form-control" type="text" placeholder="Search" aria-label="Search" name="search">
                 </form>
                 <a href="#" class="toggle-search"><i class="material-icons">close</i></a>
             </div>
@@ -92,10 +94,14 @@
                                 </li>
                                 <li class="nav-item dropdown hidden-on-mobile">
                                     <a class="nav-link dropdown-toggle" href="#" id="addDropdownLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="material-icons">logout</i>
+                                        <i class="material-icons">{% if request.user.is_authenticated %}logout{% else %}login{% endif %}</i>
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="addDropdownLink">
+                                        {% if request.user.is_authenticated %}
                                         <li><a class="dropdown-item" href="{% url 'logout_url' %}" style="color: red;">log-out</a></li>
+                                        {% else %}
+                                        <li><a class="dropdown-item" href="{% url 'login_url' %}" style="color: blue;">log-in</a></li>
+                                        {% endif %}
                                     </ul>
                                 </li>
                             </ul>

@@ -6,6 +6,7 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 import xlrd
 import openpyxl
 
@@ -48,9 +49,16 @@ def index(request):
     return render(request, 'dashboard.html', context)
 
 
-@login_required(login_url='login_url')
 def student_list(request):
-    students = models.Student.objects.all().order_by('-degree')
+    search_student = request.GET.get('search')
+    students = models.Student.objects
+    if search_student:
+            if search_student.isdigit():
+                students = students.filter(origin_id=search_student)
+            else:
+                students = students.filter(Q(first_name__icontains=search_student) | Q(last_name__icontains=search_student)).order_by('-degree')        
+    else:
+        students = students.all().order_by('-degree')
     items_per_page = 10 
     paginator = Paginator(students, items_per_page)
     page_number = request.GET.get('page')
@@ -199,15 +207,6 @@ def student_delete(request):
 
     return redirect('students_url')
 
-
-@login_required(login_url='login_url')
-def search_students(request):
-    search_student = request.GET.get('search')
-    if search_student:
-        return redirect('student_edit_url', search_student)
-    else:
-        return redirect('students_url')
-    
 
 def enter_exit(request):
     context = {}
