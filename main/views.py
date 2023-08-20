@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from . import models
@@ -106,8 +107,6 @@ def create_student_by_file(request):
         book = xlrd.open_workbook(file_contents=f.file.read())
         sh = book.sheet_by_index(0)
 
-        new_students = []
-
         for row_num in range(1, sh.nrows):
 
             row = sh.row_values(row_num)
@@ -124,17 +123,13 @@ def create_student_by_file(request):
                     student.degree = degree
                 student.save()
             except:
-                new_students.append(
+                if origin_id and first_name and last_name:
                     models.Student.objects.create(first_name = first_name, last_name = last_name, origin_id = origin_id, degree = degree)
-                )
-        if new_students:
-            models.Student.objects.bulk_create(new_students)
+        messages.success(request, 'done')
 
     elif f.file.name.endswith('.xlsx'):
         book = openpyxl.load_workbook(f.file)
         sh = list(book.worksheets[0].iter_rows(values_only=True))
-        
-        new_students = [] 
         
         for up, row in enumerate(sh):
             if up == 0:
@@ -151,18 +146,32 @@ def create_student_by_file(request):
                         student.degree = row[3]
                     student.save()
                 except:
-                    if row[3] is not None:
-                        new_students.append(
-                            models.Student(first_name=row[1], last_name=row[2], origin_id=origin_id, degree=row[3])
-                        )
-        if new_students:
-            models.Student.objects.bulk_create(new_students)
-            messages.success(request, 'created successfully')
+                    if row[3] is not None and row[1] is not None and row[2] is not None:
+                        models.Student.objects.create(first_name=row[1], last_name=row[2], origin_id=origin_id, degree=row[3])
+
+        messages.success(request, 'done')
     else:
         messages.error(request, 'file format must be xlsx or xls')
                         
     return redirect("students_url")
 
+
+def student_table_make(request):
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="students.xlsx"'
+    students = models.Student.objects.all().order_by('id')
+    wb = openpyxl.Workbook()
+    ws = wb.active
+
+    columns = ['Origin ID', 'First Name', 'Last Name', 'Degree']
+    ws.append(columns)
+
+    for student in students:
+        row = [student.origin_id, student.first_name, student.last_name, str(student.degree)]
+        ws.append(row)
+
+    wb.save(response)
+    return response
 
 @login_required(login_url='login_url')
 def student_edit(request, id):
