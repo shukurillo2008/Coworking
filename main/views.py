@@ -156,6 +156,7 @@ def create_student_by_file(request):
     return redirect("students_url")
 
 
+@login_required(login_url='login_url')
 def student_table_make(request):
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="students.xlsx"'
@@ -172,6 +173,7 @@ def student_table_make(request):
 
     wb.save(response)
     return response
+
 
 @login_required(login_url='login_url')
 def student_edit(request, id):
@@ -346,3 +348,35 @@ def add_degree(request):
     except:
         messages.warning(request, 'NOt added, some thing went wrong =(') 
     return redirect('student_edit_url',student_id)
+
+
+def change_components(request):
+    worker = User.objects.filter(is_superuser=False)
+    company = models.CompanyComponent.objects.last()
+    if request.method == 'POST':
+        company_name = request.POST.get('company_name')
+        about = request.POST.get('about')
+        logo = request.FILES.get('logo')
+        company.company_name = company_name
+        company.about = about            
+        if logo :
+            company.logo = logo
+        company.save()
+
+    context = {
+        'workers':worker,
+        'price':models.TimePrice.objects.last(),
+        'company':company
+    }
+
+    return render(request, 'change_components.html', context)
+
+
+
+
+
+
+
+
+
+

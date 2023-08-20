@@ -57,7 +57,15 @@
                         Apps
                     </li>
                     <li>
-                        <a href="{% url 'index_url' %}"><i class="material-icons-two-tone">dashboard</i>Dashboard</a>
+                        <a href=""><i class="material-icons-two-tone">dashboard</i>Dashboard<i class="material-icons has-sub-menu">keyboard_arrow_right</i></a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="{% url 'index_url' %}">Dashboard</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'change_components_url' %}">Change components</a>
+                            </li>
+                        </ul>
                     </li>
                     <li>
                         <a href=""><i class="material-icons-two-tone">groups</i>Students<i class="material-icons has-sub-menu">keyboard_arrow_right</i></a>
