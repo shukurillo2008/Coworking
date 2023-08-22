@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from . import models
@@ -223,14 +223,12 @@ def enter_exit(request):
     context = {}
 
     if request.method == 'POST':
-        origin_id = request.POST.get('origin_id')
-        
+        origin_id = request.POST.get('user_id')
         if origin_id:
             try:
                 student = models.Student.objects.get(origin_id=origin_id)
                 try:
                     enterexit = models.EnterExit.objects.get(student=student, in_out=False)
-                    
                     price = models.TimePrice.objects.last()
                     enterexit.in_out = True
                     enterexit.exit_time = timezone.now()
@@ -252,18 +250,24 @@ def enter_exit(request):
 
                     student.save()
                     
-                    messages.success(request, f'Exited. Total cost: {total_cost:.2f}')
                     context['student'] = student
-
+                    return JsonResponse({
+                        'last_name': student.last_name,
+                        "first_name": student.first_name,
+                        'status': "Chiqdi",
+                        'degree':  f'{total_cost:.2f}'
+                    })
                 except:
-
                     models.EnterExit.objects.create(
                         student = student,
                         enter_time = timezone.now(),
                         in_out = False,
                     )
-                    messages.success(request, 'Entered')
-                    context['student'] = student
+                    return JsonResponse({
+                        'last_name': student.last_name,
+                        "first_name": student.first_name,
+                        "status": "Kirdi",
+                    })
             except:
                 messages.error(request, 'Not Found 404')
                 return redirect('error_url')
@@ -380,3 +384,7 @@ def change_components(request):
 
 
 
+# studen id ozgarmedi
+# intcomma
+# Add Worker delete
+# student enter exit page with date range filter

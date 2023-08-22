@@ -30,6 +30,18 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'assets/images/neptune.png' %}" />
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/images/neptune.png' %}" />
 
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+        -moz-appearance: textfield;
+        }
+    </style>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -50,28 +62,19 @@
                 {% csrf_token %}
                 <div class="auth-credentials m-b-xxl">
                     <label class="form-label">First name</label><br>
-                    <input type="text" class="form-control m-b-md" disabled>
+                    <h1 id="first_name"></h1>
     
                     <label class="form-label">Last name</label><br>
-                    <input type="text" class="form-control m-b-md" disabled>
+                    <h1 id="last_name"></h1>
     
                     <label class="form-label">ID</label>
                     <input type="number" class="form-control m-b-md" id="user_id" name="origin_id">
                 </div>
-    
-                <div class="auth-submit">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
             </form>
 
             <div class="divider"></div>
-            {% if messages %}
-                {% for message in messages %}
-                    {% if message.tags %}
-                    <div class="d-flex justify-content-center"><h1>{{message}}</h1></div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+            <h1 id="response_message"></h1>
+            <h1 id="degree"></h1>
         </div>
     </div>
     
@@ -93,14 +96,16 @@
                         url: "{% url 'enter_exit_url' %}", // Replace with your actual backend URL
                         type: "POST", // Use "GET", "POST", or other HTTP method
                         data: dataToSend, // Data to send to the backend
+                        headers: {'X-CSRFToken': '{{ csrf_token }}'},
                         success: function(response) {
-                            console.log("Response from server:", response);
-                            // Handle the response from the server here
-                            if (in_out===true){
-                                 
-                            }
+                            console.log(response)
+                            document.getElementById('first_name').innerHTML = response.first_name
+                            document.getElementById('last_name').innerHTML = response.last_name
+                            document.getElementById('response_message').innerHTML = response.status
+                            document.getElementById('degree').innerHTML = response.degree
                         },
                         error: function(error) {
+                            console.log("error")
                         }
                     });
                 }, 1000); // 3000 milliseconds = 3 seconds

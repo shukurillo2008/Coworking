@@ -7,6 +7,11 @@
             <h1>Change components</h1>
         </div>
     </div>
+    <div class="col">
+        <div class="page-description">
+            <h1>Change components</h1>
+        </div>
+    </div>
 </div>
 <div class="row">
     <div class="col">
@@ -27,46 +32,6 @@
                                     <label for="settingsInputLastName" class="form-label">About</label>
                                     <textarea name="about" class="form-control" id="" cols="30" rows="10" required>{{company.about}}</textarea>
                                 
-                            </div>
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary m-t-sm">Submit</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col">
-        <div class="page-description">
-            <h1>Add Worker</h1>
-        </div>
-    </div>
-    <div class="col">
-        <div class="page-description">
-            <h1>Change price</h1>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col">
-        <div class="tab-pane fade show active">
-                <div class="card">
-                    <div class="card-body">
-                        <form action="{% url 'worker_create_url' %}" method="post">
-                            {% csrf_token %}
-                            <div class="row m-t-lg">
-                                <div class="col-md">
-                                    <label for="settingsInputFirstName" class="form-label">Username</label>
-                                    <input type="text" class="form-control"  name="username" required>
-                                </div>
-                                <div class="col-md">
-                                    <label for="settingsInputLastName" class="form-label">Password</label>
-                                    <input type="password" class="form-control" name="password" required>
-                                </div>
                             </div>
                             <div class="col">
                                 <button type="submit" class="btn btn-primary m-t-sm">Submit</button>
@@ -99,40 +64,4 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md">
-        <div class="card">
-
-            <div class="card-header">
-                <h5 class="card-title">workers</h5>
-            </div>
-            <div class="card-body">
-                <div class="example-container">
-                    <div class="example-content">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">№</th>
-                                    <th scope="col">Username</th>
-                                    <th scope="col">ID</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for worker in workers %}
-                                <tr>
-                                    <th scope="row">{{ forloop.counter }}</th>
-                                    <td><a href="{% url 'worker_edit_url' worker.id %}">{{worker.username}}</a></td>
-                                    <td>{{worker.id}}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        
-    </div>
-</div>
 {% endblock %}
