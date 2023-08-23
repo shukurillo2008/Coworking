@@ -89,6 +89,7 @@ def create_student(request):
                 origin_id=origin_id
             )
 
+
             # student.qr_code.save(f'qr_{origin_id}.png', ContentFile(image_buffer.getvalue()), save=True)
             messages.success(request, 'Created successfully!')
         except: 
@@ -123,7 +124,7 @@ def create_student_by_file(request):
                     student.degree = degree
                 student.save()
             except:
-                if origin_id and first_name and last_name:
+                if origin_id and first_name and last_name: 
                     models.Student.objects.create(first_name = first_name, last_name = last_name, origin_id = origin_id, degree = degree)
         messages.success(request, 'done')
 
