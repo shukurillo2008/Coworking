@@ -23,6 +23,7 @@ def index(request):
     not_used_degree = 0
     students = student.count()
 
+
     for degree in models.UsedDegree.objects.all():
         used_degree_all += degree.used_degree
         if degree.created_time.day == timezone.now().day and degree.created_time.year == timezone.now().year:
@@ -189,7 +190,7 @@ def student_edit(request, id):
             if int(origin_id) != id:
                 student.origin_id = int(origin_id)
             student.save()
-            messages.success(request , 'Changed successfully!')
+            messages.success(request , 'Changed successfuly!')
         except:
             messages.warning(request, 'This ID is Used or Some thing went wrong =(')
         return redirect('student_edit_url',origin_id)
