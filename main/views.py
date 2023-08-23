@@ -23,6 +23,7 @@ def index(request):
     not_used_degree = 0
     students = student.count()
 
+
     for degree in models.UsedDegree.objects.all():
         used_degree_all += degree.used_degree
         if degree.created_time.day == timezone.now().day and degree.created_time.year == timezone.now().year:
@@ -114,6 +115,7 @@ def create_student(request):
                 origin_id=origin_id
             )
 
+
             # student.qr_code.save(f'qr_{origin_id}.png', ContentFile(image_buffer.getvalue()), save=True)
             messages.success(request, 'Created successfully!')
         except: 
@@ -148,7 +150,7 @@ def create_student_by_file(request):
                     student.degree = degree
                 student.save()
             except:
-                if origin_id and first_name and last_name:
+                if origin_id and first_name and last_name: 
                     models.Student.objects.create(first_name = first_name, last_name = last_name, origin_id = origin_id, degree = degree)
         messages.success(request, 'done')
 
@@ -210,7 +212,7 @@ def student_edit(request, id):
             student.first_name = first_name
             student.last_name = last_name
             student.save()
-            messages.success(request , 'Changed successfully!')
+            messages.success(request , 'Changed successfuly!')
         except:
             messages.warning(request, 'Some thing went wrong =(')
         return redirect('student_edit_url',id)
