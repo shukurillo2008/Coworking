@@ -354,6 +354,7 @@ def add_degree(request):
     return redirect('student_edit_url',student_id)
 
 
+@login_required(login_url='login_url')
 def change_components(request):
     worker = User.objects.filter(is_superuser=False)
     company = models.CompanyComponent.objects.last()
@@ -373,7 +374,7 @@ def change_components(request):
         'company':company
     }
 
-    return render(request, 'change_components.html', context)
+    return render(request, 'change_info.html', context)
 
 
 

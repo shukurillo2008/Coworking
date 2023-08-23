@@ -11,6 +11,28 @@
     {% endfor %}
 
 {% endif %}
+
+<style>
+        .download-button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #fbfbfb;
+        color: rgb(32, 32, 32);
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .download-button:hover {
+        background-color: #f0f0f0;
+    }
+
+    .download-icon {
+        margin-right: 5px;
+    }
+</style>
+
 <div class="row">
     <div class="col">
         <div class="page-description">
@@ -23,7 +45,11 @@
         <div class="card">
             <div class="card-body">
                 <div class="row" style="text-align: end;">
-                    <a href="{% url 'student_table_url' %}" class="">Download</a>
+                    <div class="col-md">
+                        <a href="{% url 'student_table_url' %}" class="download-button">
+                            <span class="download-icon">&#x1F4E5;</span> Download
+                        </a>
+                    </div>
                 </div>
                 <table class="table" style="width:100%">
                     <thead>

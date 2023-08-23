@@ -41,6 +41,7 @@
         input[type=number] {
         -moz-appearance: textfield;
         }
+
     </style>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -61,10 +62,10 @@
             <form action="{% url 'enter_exit_url' %}" method="post">
                 {% csrf_token %}
                 <div class="auth-credentials m-b-xxl">
-                    <label class="form-label">First name</label><br>
+                    <label class="form-label">First name</label>
                     <h1 id="first_name"></h1>
     
-                    <label class="form-label">Last name</label><br>
+                    <label class="form-label">Last name</label>
                     <h1 id="last_name"></h1>
     
                     <label class="form-label">ID</label>
@@ -102,7 +103,9 @@
                             document.getElementById('first_name').innerHTML = response.first_name
                             document.getElementById('last_name').innerHTML = response.last_name
                             document.getElementById('response_message').innerHTML = response.status
-                            document.getElementById('degree').innerHTML = response.degree
+                            if (response.degree) {
+                                document.getElementById('degree').innerHTML = response.degree;
+                            }
                         },
                         error: function(error) {
                             console.log("error")

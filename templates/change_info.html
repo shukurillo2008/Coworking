@@ -1,15 +1,30 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }   
+
+</style>
+
 <div class="row">
     <div class="col">
         <div class="page-description">
-            <h1>Change components</h1>
+            <h1>Change Info</h1>
         </div>
     </div>
     <div class="col">
         <div class="page-description">
-            <h1>Change components</h1>
+            <h1>Change price</h1>
         </div>
     </div>
 </div>
