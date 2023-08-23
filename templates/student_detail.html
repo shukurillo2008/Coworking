@@ -42,23 +42,19 @@
                                 <label for="settingsInputLastName" class="form-label">Last Name</label>
                                 <input type="text" class="form-control" value="{{student.last_name}}" name="last_name">
                             </div>
-                            <div class="col">
-                                <label for="settingsInputID" class="form-label">ID</label>
-                                <input type="number" class="form-control" value="{{student.origin_id}}" name="origin_id">
-                            </div>
                         </div>
                         <div class="row m-t-lg">
                             <div class="col">
                                 <button type="submit" class="btn btn-primary m-t-sm">Update</button>
                             </div>
                             <div class="col">
-                                <form action="{% url 'student_delete_url' %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="{{student.origin_id}}" name="origin_id">
-                                    <button type="submit" class="btn btn-danger m-t-sm">Delete</button>
-                                </form>
                             </div>
                         </div>
+                    </form>
+                    <form action="{% url 'student_delete_url' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{student.origin_id}}" name="origin_id">
+                        <button type="submit" class="btn btn-danger m-t-sm">Delete</button>
                     </form>
                 </div>
             </div>

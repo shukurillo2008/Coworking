@@ -72,6 +72,31 @@ def student_list(request):
 
 
 @login_required(login_url='login_url')
+def en_ex_list(request):
+    enter_exit = models.EnterExit.objects
+    from_time = request.GET.get('from_time')
+    to_time = request.GET.get('to_time')
+    if from_time:
+        if to_time:
+            enter_exit = enter_exit.filter(enter_time__date__gte = from_time, enter_time__date__lte = to_time).order_by('-enter_time')
+        else:
+            enter_exit = enter_exit.filter(enter_time__gte = from_time).order_by('-enter_time')
+    elif to_time:
+        enter_exit = enter_exit.filter(enter_time__lte = to_time)
+    else:
+        enter_exit = enter_exit.all().order_by('-enter_time')
+    items_per_page = 10 
+    paginator = Paginator(enter_exit, items_per_page)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
+    context = {
+        'page': page,
+    }
+    return render(request, 'student_en_ex_list.html', context)
+
+
+@login_required(login_url='login_url')
 def create_student(request):
     if request.method == 'POST':
         try:
@@ -180,18 +205,15 @@ def student_edit(request, id):
     if request.method == 'POST':
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
-        origin_id = request.POST['origin_id']
         try:
-            student = models.Student.objects.get(id=id)
+            student = models.Student.objects.get(origin_id=id)
             student.first_name = first_name
             student.last_name = last_name
-            if int(origin_id) != id:
-                student.origin_id = int(origin_id)
             student.save()
             messages.success(request , 'Changed successfully!')
         except:
-            messages.warning(request, 'This ID is Used or Some thing went wrong =(')
-        return redirect('student_edit_url',origin_id)
+            messages.warning(request, 'Some thing went wrong =(')
+        return redirect('student_edit_url',id)
     else:
         student = models.Student.objects.get(origin_id=id)
         used_degree = models.UsedDegree.objects.filter(student=student).order_by('-id')
@@ -377,7 +399,9 @@ def change_components(request):
     return render(request, 'change_info.html', context)
 
 
-
+def company(request):
+    company = models.CompanyComponent.objects.last()
+    return {'objects': company}
 
 
 

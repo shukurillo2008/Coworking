@@ -12,26 +12,6 @@
 
 {% endif %}
 
-<style>
-        .download-button {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #fbfbfb;
-        color: rgb(32, 32, 32);
-        border-radius: 5px;
-        text-decoration: none;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
-    }
-
-    .download-button:hover {
-        background-color: #f0f0f0;
-    }
-
-    .download-icon {
-        margin-right: 5px;
-    }
-</style>
 
 <div class="row">
     <div class="col">
@@ -40,33 +20,49 @@
         </div>
     </div>
 </div>
+
 <div class="row">
     <div class="col">
+
         <div class="card">
-            <div class="card-body">
-                <div class="row" style="text-align: end;">
-                    <div class="col-md">
-                        <a href="{% url 'student_table_url' %}" class="download-button">
-                            <span class="download-icon">&#x1F4E5;</span> Download
-                        </a>
-                    </div>
+                <div class="tab-pane fade show active">
+                        <div class="card">
+                            <div class="card-body">
+                                <form action="{% url 'en_ex_list_url' %}" method="get">
+                                    <div class="row m-t-lg">
+                                        <div class="col-md">
+                                            <label for="settingsInputFirstName" class="form-label">From date</label>
+                                            <input type="date" class="form-control"  name="from_time">
+                                        </div>
+                                        <div class="col-md">
+                                            <label for="settingsInputLastName" class="form-label">To date</label>
+                                            <input type="date" class="form-control" name="to_time">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-primary m-t-sm">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                 </div>
+            <div class="card-body">
                 <table class="table" style="width:100%">
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Degrees</th>
+                            <th>Name</th>
+                            <th>enter</th>
+                            <th>exit</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for student in page %}
+                        {% for enexit in page %}
                         <tr>
-                            <td><a href="{% url 'student_edit_url' student.origin_id%}">{{student.origin_id}}</a></td>
-                            <td>{{student.first_name}}</td>
-                            <td>{{student.last_name}}</td>
-                            <td>{{student.degree}}</td>
+                            <td><a href="{% url 'student_edit_url' enexit.student.origin_id%}">{{enexit.student.origin_id}}</a></td>
+                            <td>{{enexit.student.first_name}} {{enexit.student.last_name}}</td>
+                            <td>{{enexit.enter_time}}</td>
+                            <td>{{enexit.exit_time}}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -107,7 +103,7 @@
                         {% endif %}
                     </ul>
                 </nav>
-                {% endif %}
+            {% endif %}
             </div>
         </div>
     </div>

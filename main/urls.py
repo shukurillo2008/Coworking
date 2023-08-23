@@ -18,5 +18,6 @@ urlpatterns = [
     path('logout/', login_views.log_out, name='logout_url'),
     path("create_student_by_file/", views.create_student_by_file, name="create_student_by_file"),
     path('download/table', views.student_table_make, name='student_table_url'),
-    path('change/component', views.change_components, name='change_components_url')
+    path('change/component', views.change_components, name='change_components_url'),
+    path('student/en-ex/', views.en_ex_list,  name='en_ex_list_url'),
 ]

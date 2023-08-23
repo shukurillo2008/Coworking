@@ -28,8 +28,8 @@
     <link href="{% static 'assets/css/main.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/custom.css' %}" rel="stylesheet">
 
-    <link rel="icon" type="image/png" sizes="32x32" href="../../assets/images/neptune.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="../../assets/images/neptune.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{objects.logo.url}}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{objects.logo.url}}" />
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -43,7 +43,7 @@
     <div class="app align-content-stretch d-flex flex-wrap">
         <div class="app-sidebar">
             <div class="logo">
-                <a href="{% url 'students_url' %}" class="logo-icon"><span class="logo-text">Coworking</span></a>
+                <a href="{% url 'students_url' %}" class="logo-icon"><span class="logo-text">{{objects.company_name}}</span></a>
                 <div class="sidebar-user-switcher user-activity-online">
                     <a href="#">
                         <span class="user-info-text">{{request.user.username}}<br><span class="user-state-info">{% if request.user.is_superuser == True %} Superadmin {% elif request.user.is_staff == True %} Admin {% else %} Guest {% endif %}</span></span>
@@ -72,6 +72,9 @@
                         <ul class="sub-menu">
                             <li>
                                 <a href="{% url 'students_url' %}">students list</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'en_ex_list_url' %}">students Enter-exit list</a>
                             </li>
                             <li>
                                 <a href="{% url 'student_create_url' %}">student create</a>
