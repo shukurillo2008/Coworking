@@ -66,8 +66,23 @@ def student_list(request):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
+    page_numbers = []
+
+    if page.number >= 1:
+        page_numbers.append(1)
+    if page.number> 2:
+        page_numbers.append('...')
+    for num in range(page.number -1 , page.number + 2):
+        if num > 1 and num <= paginator.num_pages:
+            page_numbers.append(num)
+    if page.number < paginator.num_pages - 1:
+        page_numbers.append('...')
+    if page.number < paginator.num_pages:
+        page_numbers.append(paginator.num_pages)
+
     context = {
         'page': page,
+        'page_numbers': page_numbers
     }
     return render(request, 'student_list.html', context)
 
@@ -86,13 +101,28 @@ def en_ex_list(request):
         enter_exit = enter_exit.filter(enter_time__lte = to_time)
     else:
         enter_exit = enter_exit.all().order_by('-enter_time')
-    items_per_page = 10 
+    items_per_page = 10
     paginator = Paginator(enter_exit, items_per_page)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
+    page_numbers = []
+
+    if page.number >= 1:
+        page_numbers.append(1)
+    if page.number> 2:
+        page_numbers.append('...')
+    for num in range(page.number -1 , page.number + 2):
+        if num > 1 and num <= paginator.num_pages:
+            page_numbers.append(num)
+    if page.number < paginator.num_pages - 1:
+        page_numbers.append('...')
+    if page.number < paginator.num_pages:
+        page_numbers.append(paginator.num_pages)
+
     context = {
         'page': page,
+        'page_numbers': page_numbers
     }
     return render(request, 'student_en_ex_list.html', context)
 

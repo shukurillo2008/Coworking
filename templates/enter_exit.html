@@ -102,11 +102,15 @@
                     headers: {'X-CSRFToken': '{{ csrf_token }}'},
                     success: function(response) {
                         console.log(response);
-                        document.getElementById('first_name').innerHTML = response.first_name;
-                        document.getElementById('last_name').innerHTML = response.last_name;
-                        document.getElementById('response_message').innerHTML = response.status;
-                        if (response.degree) {
-                            document.getElementById('degree').innerHTML = response.degree;
+                        if (response.first_name, response.last_name, response.status) {
+                            document.getElementById('first_name').innerHTML = response.first_name;
+                            document.getElementById('last_name').innerHTML = response.last_name;
+                            document.getElementById('response_message').innerHTML = response.status;
+                            if (response.degree) {
+                                document.getElementById('degree').innerHTML = response.degree;
+                            }
+                        } else{
+                            document.getElementById('response_message').innerHTML = 'Topilmadi';
                         }
 
                         setTimeout(function() {
@@ -115,7 +119,7 @@
                             document.getElementById('last_name').innerHTML = "";
                             document.getElementById('response_message').innerHTML = "";
                             document.getElementById('degree').innerHTML = "";
-                        }, 5000);
+                        }, 10000);
                     },
                     
                     error: function(error) {
