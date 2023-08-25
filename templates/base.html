@@ -42,13 +42,11 @@
 <body>
     <div class="app align-content-stretch d-flex flex-wrap">
         <div class="app-sidebar">
-            <div class="logo">
-                <a href="{% url 'students_url' %}" class="logo-icon"><span class="logo-text">{{objects.company_name}}</span></a>
-                <div class="sidebar-user-switcher user-activity-online">
-                    <a href="#">
-                        <span class="user-info-text">{{request.user.username}}<br><span class="user-state-info">{% if request.user.is_superuser == True %} Superadmin {% elif request.user.is_staff == True %} Admin {% else %} Guest {% endif %}</span></span>
-                    </a>
-                </div>
+            <div class="logo d-flex align-items-center">
+                <a class="navbar-brand" href="#">
+                    <img src="{{ objects.logo.url }}" width="70" height="60" alt="{{ objects.company_name }} Logo">
+                    <span class="company-name" style="font-size: large; color: black; font-weight: 700;">{{ objects.company_name }}</span>
+                </a>
             </div>
             <div class="app-menu">
                 {% if request.user.is_authenticated %}

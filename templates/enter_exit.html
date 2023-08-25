@@ -58,8 +58,11 @@
 
         </div>
         <div class="app-auth-container">
-            <div class="logo">
-                <a href="{% url 'students_url' %}">Coworking</a>
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand" href="{% url 'students_url' %}">
+                    <img src="{{ objects.logo.url }}" width="70" height="60" alt="{{ objects.company_name }} Logo">
+                    <span class="company-name" style="font-size: large; color: black; font-weight: 700; font-size: x-large;">{{ objects.company_name }}</span>
+                </a>
             </div>
             <form action="{% url 'enter_exit_url' %}" method="post">
                 {% csrf_token %}
@@ -78,6 +81,7 @@
             <div class="divider"></div>
             <h1 id="response_message"></h1>
             <h1 id="degree"></h1>
+            <h1 id="send_degree"></h1>
         </div>
     </div>
     
@@ -109,6 +113,9 @@
                             if (response.degree) {
                                 document.getElementById('degree').innerHTML = response.degree;
                             }
+                            if (response.send_degree) {
+                                document.getElementById('send_degree').innerHTML = response.send_degree;
+                            }
                         } else{
                             document.getElementById('response_message').innerHTML = 'Topilmadi';
                         }
@@ -119,6 +126,7 @@
                             document.getElementById('last_name').innerHTML = "";
                             document.getElementById('response_message').innerHTML = "";
                             document.getElementById('degree').innerHTML = "";
+                            document.getElementById('send_degree').innerHTML = "";
                         }, 10000);
                     },
                     

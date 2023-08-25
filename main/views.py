@@ -255,9 +255,24 @@ def student_edit(request, id):
         paginator = Paginator(used_degree, items_per_page)
         page_obj = paginator.get_page(page_number)
 
+        page_numbers = []
+
+        if page_obj.number >= 1:
+            page_numbers.append(1)
+        if page_obj.number> 2:
+            page_numbers.append('...')
+        for num in range(page_obj.number -1 , page_obj.number + 2):
+            if num > 1 and num <= paginator.num_pages:
+                page_numbers.append(num)
+        if page_obj.number < paginator.num_pages - 1:
+            page_numbers.append('...')
+        if page_obj.number < paginator.num_pages:
+            page_numbers.append(paginator.num_pages)
+
         context = {
             'student': student,
             'degree': page_obj,
+            'page_numbers':page_numbers
         }
 
     return render(request, 'student_detail.html', context)
@@ -294,6 +309,11 @@ def enter_exit(request):
                     total_cost = price.price * Decimal(str(time_hours))
                     student.degree -= total_cost
 
+                    send_degree = None
+
+                    if student.degree < 0:
+                        send_degree = student.degree
+
                     models.UsedDegree.objects.create(
                         student = student,
                         enter_exit = enterexit,
@@ -309,22 +329,30 @@ def enter_exit(request):
                         'last_name': student.last_name,
                         "first_name": student.first_name,
                         'status': "Chiqdi",
-                        'degree':  f'{total_cost:.2f}'
+                        'degree':  f'{total_cost:.2f}',
+                        'send_degree': send_degree
                     })
                 except:
-                    models.EnterExit.objects.create(
-                        student = student,
-                        enter_time = timezone.now(),
-                        in_out = False,
-                    )
+
+                    status = ''
+                    if student.degree >= models.TimePrice.objects.last().price:
+                        models.EnterExit.objects.create(
+                            student = student,
+                            enter_time = timezone.now(),
+                            in_out = False,
+                        )
+                        status = 'Kirdi'
+                    else:
+                        status = 'yetarli bal mavjud emas' 
                     return JsonResponse({
                         'last_name': student.last_name,
                         "first_name": student.first_name,
-                        "status": "Kirdi",
+                        "status": status,
                     })
             except:
                 messages.error(request, 'Not Found 404')
                 return redirect('error_url')
+            
     return render(request, 'enter_exit.html', context)
 
 

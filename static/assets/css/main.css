@@ -904,7 +904,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 40px;
     height: 40px;
     font-size: 18px;
-    background: url(../images/neptune.png) no-repeat;
+    background:no-repeat;
     background-position: center left;
     background-size: 40px;
     display: block;
