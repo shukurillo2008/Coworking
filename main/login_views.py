@@ -11,15 +11,21 @@ def login_views(request):
         data_user = request.POST.get('data_user') 
         password = request.POST.get('password')
         if str(data_user).isdigit():
-            user_id = User.objects.get(id = data_user)
-            user = authenticate(username = user_id.username,  password=password)
+            try:
+                user_id = User.objects.get(id = data_user)
+                user = authenticate(username = user_id.username,  password=password)
+                if user is not None:
+                    messages.success(request, 'dasturga kirdingiz')
+            except:
+                messages.error(request, '404')
+                return redirect('error_url')
         else:
             user = authenticate(username=data_user , password=password)
         if user is not None:
             login(request, user)
             messages.success(request, 'dasturga kirdingiz')
             return redirect('index_url')
-        else:
+        else:   
             messages.error(request, 'parol yoki login hato')
         return redirect('error_url')
     return render(request, 'login.html',)

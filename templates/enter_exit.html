@@ -29,8 +29,8 @@
     <link href="{% static 'assets/css/main.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/custom.css' %}" rel="stylesheet">
 
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'assets/images/neptune.png' %}" />
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/images/neptune.png' %}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{objects.logo.url}}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{objects.logo.url}}" />
 
     <style>
         input::-webkit-outer-spin-button,
@@ -127,7 +127,7 @@
                             document.getElementById('response_message').innerHTML = "";
                             document.getElementById('degree').innerHTML = "";
                             document.getElementById('send_degree').innerHTML = "";
-                        }, 10000);
+                        }, 8000);
                     },
                     
                     error: function(error) {

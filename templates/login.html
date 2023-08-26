@@ -27,8 +27,8 @@
     <link href="{% static 'assets/css/main.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/custom.css' %}" rel="stylesheet">
 
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'assets/images/neptune.png' %}" />
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/images/neptune.png' %}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{objects.logo.url}}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{objects.logo.url}}" />
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -40,13 +40,16 @@
 <body>
     <div class="app app-auth-sign-in align-content-stretch d-flex flex-wrap justify-content-end">
         <div class="app-auth-background">
-
+            
         </div>
         <div class="app-auth-container">
             <form action="{% url 'login_url' %}" method="post">
                 {% csrf_token %}
-                <div class="logo">
-                    <a>Login</a>
+                <div class="d-flex align-items-center">
+                    <a class="navbar-brand">
+                        <img src="{{ objects.logo.url }}" width="70" height="60" alt="{{ objects.company_name }} Logo">
+                        <span class="company-name" style="font-size: large; color: black; font-weight: 700; font-size: x-large;">Login</span>
+                    </a>
                 </div>
                 <div class="auth-credentials m-b-xxl">
                     <label for="signInEmail" class="form-label">Username or ID</label>

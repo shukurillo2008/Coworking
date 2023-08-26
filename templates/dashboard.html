@@ -19,7 +19,7 @@
 
 {% endif %}
 <div class="row">
-
+    <!-- First row of widgets -->
     <div class="col-xl-4">
         <div class="card widget widget-stats">
             <div class="card-body">
@@ -29,7 +29,7 @@
                     </div>
                     <div class="widget-stats-content flex-fill">
                         <span class="widget-stats-title">Students</span>
-                        <span class="widget-stats-amount">{{students}}</span>
+                        <span class="widget-stats-amount" id="studentsDisplay"></span>
                     </div>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                     </div>
                     <div class="widget-stats-content flex-fill">
                         <span class="widget-stats-title">Visits Today</span>
-                        <span class="widget-stats-amount">{{visits_today}}</span>
+                        <span class="widget-stats-amount" id="visitsTodayDisplay"></span>
                     </div>
                 </div>
             </div>
@@ -61,15 +61,16 @@
                     </div>
                     <div class="widget-stats-content flex-fill">
                         <span class="widget-stats-title">Used Degrees Today</span>
-                        <span class="widget-stats-amount">{{used_degree}}</span>
+                        <span class="widget-stats-amount" id="usedDegreeDisplay"></span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="row">
 
+<div class="row">
+    <!-- Second row of widgets -->
     <div class="col-xl-4">
         <div class="card widget widget-stats">
             <div class="card-body">
@@ -79,7 +80,7 @@
                     </div>
                     <div class="widget-stats-content flex-fill">
                         <span class="widget-stats-title">Not used degrees</span>
-                        <span class="widget-stats-amount">{{not_used_degree}}</span>
+                        <span class="widget-stats-amount" id="notUsedDegreeDisplay"></span>
                     </div>
                 </div>
             </div>
@@ -95,7 +96,7 @@
                     </div>
                     <div class="widget-stats-content flex-fill">
                         <span class="widget-stats-title">Visits All time</span>
-                        <span class="widget-stats-amount">{{visits_all}}</span>
+                        <span class="widget-stats-amount" id="visitsAllDisplay"></span>
                     </div>
                 </div>
             </div>
@@ -111,16 +112,52 @@
                     </div>
                     <div class="widget-stats-content flex-fill">
                         <span class="widget-stats-title">Used Degrees All time</span>
-                        <span class="widget-stats-amount">{{used_degree_all}}</span>
+                        <span class="widget-stats-amount" id="usedDegreeAllDisplay"></span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-</div>    
+<script>
+    function formatNumber(number) {
+        if (number >= 1000000000) { // If greater than or equal to 1 billion
+            return (number / 1000000000).toFixed(1) + 'B';
+        } else if (number >= 1000000) { // If greater than or equal to 1 million
+            return (number / 1000000).toFixed(1) + 'M';
+        } else if (number >= 1000) { // If greater than or equal to 1 thousand
+            return (number / 1000).toFixed(1) + 'k';
+        }
+        return number.toLocaleString(); // No abbreviation needed
+    }
 
+    // Replace these with your actual numbers
+    const students = {{students}} ;
+    const visits_today = {{visits_today}};
+    const used_degree = {{used_degree}};
+    const not_used_degree = {{not_used_degree}};
+    const visits_all = {{visits_all}};
+    const used_degree_all = {{used_degree_all}};
 
+    const studentsFormatted = formatNumber(students);
+    document.getElementById('studentsDisplay').textContent = studentsFormatted;
+
+    const visitsTodayFormatted = formatNumber(visits_today);
+    document.getElementById('visitsTodayDisplay').textContent = visitsTodayFormatted;
+
+    const usedDegreeFormatted = formatNumber(used_degree);
+    document.getElementById('usedDegreeDisplay').textContent = usedDegreeFormatted;
+
+    const notUsedDegreeFormatted = formatNumber(not_used_degree);
+    document.getElementById('notUsedDegreeDisplay').textContent = notUsedDegreeFormatted;
+
+    const visitsAllFormatted = formatNumber(visits_all);
+    document.getElementById('visitsAllDisplay').textContent = visitsAllFormatted;
+
+    const usedDegreeAllFormatted = formatNumber(used_degree_all);
+    document.getElementById('usedDegreeAllDisplay').textContent = usedDegreeAllFormatted;
+</script>
 
 {% endblock %}
 

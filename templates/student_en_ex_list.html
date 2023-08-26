@@ -62,7 +62,11 @@
                             <td><a href="{% url 'student_edit_url' enexit.student.origin_id%}">{{enexit.student.origin_id}}</a></td>
                             <td>{{enexit.student.first_name}} {{enexit.student.last_name}}</td>
                             <td>{{enexit.enter_time}}</td>
+                            {% if enexit.exit_time %}
                             <td>{{enexit.exit_time}}</td>
+                            {% else %}
+                            <td>Binoda</td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>

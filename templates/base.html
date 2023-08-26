@@ -43,7 +43,7 @@
     <div class="app align-content-stretch d-flex flex-wrap">
         <div class="app-sidebar">
             <div class="logo d-flex align-items-center">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="{% url 'students_url' %}">
                     <img src="{{ objects.logo.url }}" width="70" height="60" alt="{{ objects.company_name }} Logo">
                     <span class="company-name" style="font-size: large; color: black; font-weight: 700;">{{ objects.company_name }}</span>
                 </a>

@@ -53,14 +53,20 @@ def index(request):
 
 def student_list(request):
     search_student = request.GET.get('search')
-    students = models.Student.objects
+    students = models.Student.objects.all()
+
     if search_student:
-            if search_student.isdigit():
-                students = students.filter(origin_id=search_student)
-            else:
-                students = students.filter(Q(first_name__icontains=search_student) | Q(last_name__icontains=search_student)).order_by('-degree')        
+        if search_student.isdigit():
+            students = students.filter(origin_id=search_student)
+        else:
+            students = students.filter(
+                Q(first_name__icontains=search_student) | Q(last_name__icontains=search_student)
+            ).order_by('-degree')
+            return render(request, 'student_list.html', {'page' : students})
+
     else:
-        students = students.all().order_by('-degree')
+        students = students.order_by('-degree') 
+
     items_per_page = 10 
     paginator = Paginator(students, items_per_page)
     page_number = request.GET.get('page')
@@ -68,22 +74,22 @@ def student_list(request):
 
     page_numbers = []
 
-    if page.number >= 1:
+    if page.number >= 3: 
         page_numbers.append(1)
-    if page.number> 2:
         page_numbers.append('...')
-    for num in range(page.number -1 , page.number + 2):
-        if num > 1 and num <= paginator.num_pages:
-            page_numbers.append(num)
-    if page.number < paginator.num_pages - 1:
+
+    for num in range(max(page.number - 2, 1), min(page.number + 3, paginator.num_pages + 1)):
+        page_numbers.append(num)
+
+    if page.number <= paginator.num_pages - 2: 
         page_numbers.append('...')
-    if page.number < paginator.num_pages:
         page_numbers.append(paginator.num_pages)
 
     context = {
         'page': page,
         'page_numbers': page_numbers
     }
+    
     return render(request, 'student_list.html', context)
 
 
@@ -358,43 +364,6 @@ def enter_exit(request):
 
 def error(request):
     return render(request, 'error.html')
-
-
-@login_required(login_url='login_url')
-def worker_edit(request, id):
-    if request.method == 'POST':
-        worker = User.objects.get(id = id)
-        worker.username = request.POST.get('username')
-        worker.password = request.POST.get('password')
-        worker.save()
-
-    worker = User.objects.get(id = id)
-    context = {
-        'worker': worker
-    }
-    return render(request, 'worker_detail.html', context)
-
-
-@login_required(login_url='login_url')
-def worker_create(request):
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-
-    user = User.objects.create_user(
-        username=username, 
-        password=password,
-        is_staff=True
-        )
-    messages.success(request, 'Created successfully!')
-    return redirect('index_url')
-
-
-@login_required(login_url='login_url')
-def worker_delete(request):
-    worker_id = request.POST.get('worker_id')
-    User.objects.get(id=worker_id).delete()
-    messages.success(request, 'Deleted successfully')
-    return redirect('index_url')
 
 
 @login_required(login_url='login_url')
