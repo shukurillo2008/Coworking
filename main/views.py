@@ -406,20 +406,25 @@ def add_degree(request):
 
 @login_required(login_url='login_url')
 def change_components(request):
-    worker = User.objects.filter(is_superuser=False)
     company = models.CompanyComponent.objects.last()
     if request.method == 'POST':
-        company_name = request.POST.get('company_name')
-        about = request.POST.get('about')
-        logo = request.FILES.get('logo')
-        company.company_name = company_name
-        company.about = about            
-        if logo :
-            company.logo = logo
-        company.save()
+        try:
+            company_name = request.POST.get('company_name')
+            about = request.POST.get('about')
+            logo = request.FILES.get('logo')
+            company.company_name = company_name
+            company.about = about            
+            if logo :
+                company.logo = logo
+            company.save()
+        except:
+            models.CompanyComponent.objects.create(
+                about =about,
+                logo = logo,
+                company_name = company_name
+            )
 
     context = {
-        'workers':worker,
         'price':models.TimePrice.objects.last(),
         'company':company
     }
