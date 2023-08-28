@@ -6,6 +6,7 @@ class Student(models.Model):
     last_name = models.CharField(max_length=255)
     origin_id = models.IntegerField(unique=True)
     degree = models.DecimalField(max_digits=60, decimal_places=2, default=0)
+    out = models.BooleanField(default=False)
     # qr_code = models.ImageField(upload_to='user_qr_code/')
 
     def __str__(self) -> str:
@@ -50,4 +51,25 @@ class CompanyComponent(models.Model):
     about = models.TextField(blank=True, null=True)
 
 
+# <----------------------------Not student users--------------------------------->
 
+
+class Pc(models.Model):
+    number = models.PositiveIntegerField()
+
+
+class TimeMoney(models.Model):
+    price = models.DecimalField(max_digits=60, decimal_places=2)
+    for_student = models.BooleanField(default=False)
+
+
+class OnOfTime(models.Model):
+    pc = models.ForeignKey(Pc, on_delete=models.SET_NULL, null=True)
+    on_time = models.DateTimeField(auto_now_add=True)
+    off_time = models.DateTimeField(auto_now_add=True)
+
+
+class Money(models.Model):
+    pc = models.ForeignKey(Pc, on_delete=models.SET_NULL, null=True)
+    time = models.ForeignKey(OnOfTime, on_delete=models.CASCADE)
+    money = models.DecimalField(max_digits=60, decimal_places=2)
