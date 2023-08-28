@@ -39,8 +39,10 @@ class UsedDegree(models.Model):
 class TimePrice(models.Model):
     price = models.DecimalField(max_digits=60, decimal_places=2)
 
+
 class Files(models.Model):
     file = models.FileField(upload_to='excell/')
+
 
 class CompanyComponent(models.Model):
     logo = models.ImageField(upload_to='company_components/')
