@@ -114,16 +114,15 @@ def en_ex_list(request):
 
     page_numbers = []
 
-    if page.number >= 1:
+    if page.number >= 3: 
         page_numbers.append(1)
-    if page.number> 2:
         page_numbers.append('...')
-    for num in range(page.number -1 , page.number + 2):
-        if num > 1 and num <= paginator.num_pages:
-            page_numbers.append(num)
-    if page.number < paginator.num_pages - 1:
+
+    for num in range(max(page.number - 2, 1), min(page.number + 3, paginator.num_pages + 1)):
+        page_numbers.append(num)
+
+    if page.number <= paginator.num_pages - 2: 
         page_numbers.append('...')
-    if page.number < paginator.num_pages:
         page_numbers.append(paginator.num_pages)
 
     context = {
@@ -255,29 +254,26 @@ def student_edit(request, id):
     else:
         student = models.Student.objects.get(origin_id=id)
         used_degree = models.UsedDegree.objects.filter(student=student).order_by('-id')
-
-        page_number = request.GET.get('page', 1)
         items_per_page = 10  
         paginator = Paginator(used_degree, items_per_page)
-        page_obj = paginator.get_page(page_number)
+        page_number = request.GET.get('page')
+        page = paginator.get_page(page_number)
 
         page_numbers = []
 
-        if page_obj.number >= 1:
+        if page.number >= 3: 
             page_numbers.append(1)
-        if page_obj.number> 2:
             page_numbers.append('...')
-        for num in range(page_obj.number -1 , page_obj.number + 2):
-            if num > 1 and num <= paginator.num_pages:
-                page_numbers.append(num)
-        if page_obj.number < paginator.num_pages - 1:
-            page_numbers.append('...')
-        if page_obj.number < paginator.num_pages:
-            page_numbers.append(paginator.num_pages)
 
+        for num in range(max(page.number - 2, 1), min(page.number + 3, paginator.num_pages + 1)):
+            page_numbers.append(num)
+
+        if page.number <= paginator.num_pages - 2: 
+            page_numbers.append('...')
+            page_numbers.append(paginator.num_pages)
         context = {
             'student': student,
-            'degree': page_obj,
+            'degree': page,
             'page_numbers':page_numbers
         }
 
@@ -434,11 +430,3 @@ def company(request):
 
 
 
-
-
-
-
-# studen id ozgarmedi
-# intcomma
-# Add Worker delete
-# student enter exit page with date range filter
