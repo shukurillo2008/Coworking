@@ -372,7 +372,10 @@ def change_price(request):
         messages.success(request, 'Saved successfully!')
         return redirect('index_url')
     except:
-        messages.warning(request, 'some thing went wrong')
+        models.TimePrice.objects.create(
+            price = request.POST.get('price'),
+        )
+        messages.success(request, 'created')
         return redirect('index_url')
     
 
