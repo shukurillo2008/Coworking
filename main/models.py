@@ -6,7 +6,7 @@ class Student(models.Model):
     last_name = models.CharField(max_length=255)
     origin_id = models.IntegerField(unique=True)
     degree = models.DecimalField(max_digits=60, decimal_places=2, default=0)
-    out = models.BooleanField(default=False)
+    is_student = models.BooleanField(default=True)
     # qr_code = models.ImageField(upload_to='user_qr_code/')
 
     def __str__(self) -> str:

@@ -65,7 +65,7 @@ def student_list(request):
             return render(request, 'student_list.html', {'page' : students})
 
     else:
-        students = students.order_by('-degree') 
+        students = students.filter(is_student = True).order_by('-degree') 
 
     items_per_page = 10 
     paginator = Paginator(students, items_per_page)
@@ -91,6 +91,34 @@ def student_list(request):
     }
     
     return render(request, 'student_list.html', context)
+
+
+def outed_student_list(request):
+    students = models.Student.objects.filter(is_student=False)
+    items_per_page = 10 
+    paginator = Paginator(students, items_per_page)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
+    page_numbers = []
+
+    if page.number >= 3: 
+        page_numbers.append(1)
+        page_numbers.append('...')
+
+    for num in range(max(page.number - 2, 1), min(page.number + 3, paginator.num_pages + 1)):
+        page_numbers.append(num)
+
+    if page.number <= paginator.num_pages - 2: 
+        page_numbers.append('...')
+        page_numbers.append(paginator.num_pages)
+
+    context = {
+        'page': page,
+        'page_numbers': page_numbers
+    }
+
+    return render(request, 'outed_student_list.html', context)
 
 
 @login_required(login_url='login_url')
@@ -176,6 +204,7 @@ def create_student_by_file(request):
             first_name = row[1]
             last_name = row[2]
             degree = row[3]
+            is_student = row[4]
             
             try:
                 student = models.Student.objects.get(origin_id=origin_id)
@@ -183,6 +212,10 @@ def create_student_by_file(request):
                 student.last_name = last_name
                 if degree:
                     student.degree = degree
+                if is_student == "+":
+                    student.is_student = True
+                elif is_student == "-":
+                    student.is_student = False
                 student.save()
             except:
                 if origin_id and first_name and last_name: 
@@ -206,6 +239,11 @@ def create_student_by_file(request):
                     student.last_name = row[2]
                     if row[3] is not None: 
                         student.degree = row[3]
+
+                    if row[4] == '+':
+                        student.is_student = True
+                    elif row[4] == '-':
+                        student.is_student = False
                     student.save()
                 except:
                     if row[3] is not None and row[1] is not None and row[2] is not None:
@@ -222,15 +260,34 @@ def create_student_by_file(request):
 def student_table_make(request):
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="students.xlsx"'
-    students = models.Student.objects.all().order_by('id')
+    students = models.Student.objects.filter(is_student = True).order_by('id')
     wb = openpyxl.Workbook()
     ws = wb.active
 
-    columns = ['Origin ID', 'First Name', 'Last Name', 'Degree']
+    columns = ['Origin ID', 'First Name', 'Last Name', 'Degree', 'IS Student']
     ws.append(columns)
 
     for student in students:
-        row = [student.origin_id, student.first_name, student.last_name, str(student.degree)]
+        row = [student.origin_id, student.first_name, student.last_name, str(student.degree), '+' if student.is_student == True else "-"]
+        ws.append(row)
+
+    wb.save(response)
+    return response
+
+
+@login_required(login_url='login_url')
+def outed_student_table_make(request):
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="outed-students.xlsx"'
+    students = models.Student.objects.filter(is_student = False).order_by('id')
+    wb = openpyxl.Workbook()
+    ws = wb.active
+
+    columns = ['Origin ID', 'First Name', 'Last Name', 'Degree', 'IS Student']
+    ws.append(columns)
+
+    for student in students:
+        row = [student.origin_id, student.first_name, student.last_name, str(student.degree), '+' if student.is_student == True else "-"]
         ws.append(row)
 
     wb.save(response)

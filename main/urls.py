@@ -17,4 +17,6 @@ urlpatterns = [
     path('download/table', views.student_table_make, name='student_table_url'),
     path('change/component', views.change_components, name='change_components_url'),
     path('student/en-ex/', views.en_ex_list,  name='en_ex_list_url'),
+    path('students/outed/', views.outed_student_list, name='outed_students_url'),
+    path('download/outed/table', views.outed_student_table_make, name='outed_student_table_url'),
 ]
