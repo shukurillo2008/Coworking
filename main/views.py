@@ -22,7 +22,9 @@ def index(request):
     used_degree_all = 0
     not_used_degree = 0
     students = student.count()
-
+    visits_out = models.OnOfTime.objects.filter(on_time__date=timezone.now().date()).count()
+    money = 0
+    all_money = 0
 
     for degree in models.UsedDegree.objects.all():
         used_degree_all += degree.used_degree
@@ -37,6 +39,11 @@ def index(request):
         if visit.enter_time.day == timezone.now().day and visit.enter_time.year == timezone.now().year:
             visits_today += 1
 
+    for i in models.Money.objects.all():
+        all_money += i.money
+        if i.time.on_time.date() == timezone.now().date():
+            money += i.money 
+
     context = {
         'students':students,
         'visits_today':visits_today,
@@ -45,7 +52,10 @@ def index(request):
         'used_degree_all':used_degree_all,
         'not_used_degree':not_used_degree,
         'workers':worker,
-        'price':models.TimePrice.objects.last()
+        'price':models.TimePrice.objects.last(),
+        'all_money':all_money,
+        'money':money,
+        'visits_out':visits_out
     }
 
     return render(request, 'dashboard.html', context)
@@ -489,9 +499,81 @@ def change_components(request):
     return render(request, 'change_info.html', context)
 
 
+@login_required(login_url='login_url')
 def company(request):
     company = models.CompanyComponent.objects.last()
     return {'objects': company}
+
+
+@login_required(login_url='login_url')
+def pc_list(request):
+    pc = models.Pc.objects.all()
+    context = {
+        "pc": pc
+    }
+
+    return render(request, 'pc_list.html', context)
+
+
+@login_required(login_url='login_url')
+def pc_st_end(request):
+    pc_number = request.POST.get('pc_number')
+    is_student = request.POST.get('is_student')
+    
+    try:
+        pc = models.Pc.objects.get(number=pc_number)
+        if is_student == 'True':
+            time_price = models.TimeMoney.objects.get(is_student=True)
+        else:
+            time_price = models.TimeMoney.objects.get(is_student=False)     
+        try:
+            on_of = models.OnOfTime.objects.get(pc=pc, off_time__isnull=True)
+            on_of.off_time = timezone.now()
+            on_of.save()
+            time_difference = on_of.off_time - on_of.on_time
+            time_hours = time_difference.total_seconds() / 3600
+            total_cost = on_of.pay_for.price * Decimal(time_hours)
+
+            models.Money.objects.create(pc=pc, time=on_of, money=total_cost)
+            messages.success(request, 'Done')
+            return redirect('pc_list_url')
+        except:
+            on_of = models.OnOfTime.objects.create(
+                pc=pc,
+                on_time=timezone.now(), 
+                pay_for=time_price
+                )
+            messages.success(request, 'Done')
+            return redirect('pc_list_url')
+    except:
+
+        messages.error(request, 'something went wrong  =/')
+        return redirect('error_url')
+
+
+def add_pc(request):
+    number = request.POST.get('number')
+    models.Pc.objects.create(number=number)
+    return JsonResponse({
+        'success': 'created'
+    })
+
+
+def delete_pc(request):
+    number = request.POST.get('number')
+    models.Pc.objects.get(number=number).delete()
+
+    return redirect('pc_list_url')
+
+
+
+
+
+
+
+
+
+
 
 
 

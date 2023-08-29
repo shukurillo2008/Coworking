@@ -56,6 +56,7 @@ class CompanyComponent(models.Model):
 
 class Pc(models.Model):
     number = models.PositiveIntegerField()
+    status = models.IntegerField(choices=((1, "buzy"), (2, 'blank'), (3, 'broken')), default=2)
 
 
 class TimeMoney(models.Model):
@@ -65,8 +66,9 @@ class TimeMoney(models.Model):
 
 class OnOfTime(models.Model):
     pc = models.ForeignKey(Pc, on_delete=models.SET_NULL, null=True)
-    on_time = models.DateTimeField(auto_now_add=True)
-    off_time = models.DateTimeField(auto_now_add=True)
+    pay_for = models.ForeignKey(TimeMoney, on_delete=models.SET_NULL, null=True)
+    on_time = models.DateTimeField()
+    off_time = models.DateTimeField(null=True, blank=True)
 
 
 class Money(models.Model):

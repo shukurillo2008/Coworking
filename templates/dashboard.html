@@ -118,6 +118,55 @@
             </div>
         </div>
     </div>
+<!--  -->
+    <div class="col-xl-4">
+        <div class="card widget widget-stats">
+            <div class="card-body">
+                <div class="widget-stats-container d-flex">
+                    <div class="widget-stats-icon widget-stats-icon-danger">
+                        <i class="material-icons-outlined">workspace_premium</i>
+                    </div>
+                    <div class="widget-stats-content flex-fill">
+                        <span class="widget-stats-title">Out visits</span>
+                        <span class="widget-stats-amount" id="outVisitsDisplay"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card widget widget-stats">
+            <div class="card-body">
+                <div class="widget-stats-container d-flex">
+                    <div class="widget-stats-icon widget-stats-icon-danger">
+                        <i class="material-icons-outlined">workspace_premium</i>
+                    </div>
+                    <div class="widget-stats-content flex-fill">
+                        <span class="widget-stats-title">all time Money</span>
+                        <span class="widget-stats-amount" id="allMoneyDisplay"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-xl-4">
+        <div class="card widget widget-stats">
+            <div class="card-body">
+                <div class="widget-stats-container d-flex">
+                    <div class="widget-stats-icon widget-stats-icon-danger">
+                        <i class="material-icons-outlined">workspace_premium</i>
+                    </div>
+                    <div class="widget-stats-content flex-fill">
+                        <span class="widget-stats-title">Today Money</span>
+                        <span class="widget-stats-amount" id="MoneyDisplay"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -139,6 +188,9 @@
     const not_used_degree = {{not_used_degree}};
     const visits_all = {{visits_all}};
     const used_degree_all = {{used_degree_all}};
+    const visits_out = {{visits_out}};
+    const all_money = {{all_money}};
+    const money = {{money}};
 
     const studentsFormatted = formatNumber(students);
     document.getElementById('studentsDisplay').textContent = studentsFormatted;
@@ -157,6 +209,15 @@
 
     const usedDegreeAllFormatted = formatNumber(used_degree_all);
     document.getElementById('usedDegreeAllDisplay').textContent = usedDegreeAllFormatted;
+
+    const outVisitsFormatted = formatNumber(visits_out);
+    document.getElementById('outVisitsDisplay').textContent = outVisitsFormatted;
+
+    const allMoneyFormatted = formatNumber(all_money);
+    document.getElementById('allMoneyDisplay').textContent = allMoneyFormatted;
+
+    const MoneyFormatted = formatNumber(money);
+    document.getElementById('MoneyDisplay').textContent = MoneyFormatted;
 </script>
 
 {% endblock %}
