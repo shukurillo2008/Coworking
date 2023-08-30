@@ -533,8 +533,9 @@ def pc_st_end(request):
             time_difference = on_of.off_time - on_of.on_time
             time_hours = time_difference.total_seconds() / 3600
             total_cost = on_of.pay_for.price * Decimal(time_hours)
-
             models.Money.objects.create(pc=pc, time=on_of, money=total_cost)
+            pc.status = 2
+            pc.save()
             messages.success(request, 'Done')
             return redirect('pc_list_url')
         except:
@@ -543,6 +544,8 @@ def pc_st_end(request):
                 on_time=timezone.now(), 
                 pay_for=time_price
                 )
+            pc.status = 1
+            pc.save()
             messages.success(request, 'Done')
             return redirect('pc_list_url')
     except:

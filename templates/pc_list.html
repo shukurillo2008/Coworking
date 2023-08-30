@@ -29,7 +29,9 @@
                     </div>
                 {% elif pc.status == 1 %}
                 <div class="d-flex justify-content-center">
-                    <form action="">
+                    <form action="{% url 'pc_on_off_url' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="pc_number" value="{{pc.number}}">
                         <button type="submit" class="btn btn-primary m-t-sm" style="background-color: red; margin: 5px;">OFF</button>
                     </form>
                 </div>
