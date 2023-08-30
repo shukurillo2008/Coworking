@@ -1,0 +1,100 @@
+oquvchi
+
+fio
+ball
+origin_id
+
+oquvchi qowiw excell
+
+
+excell import 
+oquvchilar origin_idlari orqali ballar qowiladi
+
+c added_ball
+date oquvchi fk ball ostatok
+
+added_ball
+
+1588 600
+
+
+
+
+ball razxod
+
+
+qr code 
+
+
+c start work
+    client fk   start_at  end_at   in_out = True
+
+    1588 12 00 null True
+    1588 13 00  null False
+
+    13-12       1
+
+
+c price  
+    ball 35
+
+
+login_required
+
+
+
+
+sahifalar
+login_required
+oquvchilar list with pagination search
+oquvchi add qolda or excell
+oquvchi detail               detailda edit      nimasini    fio origin_id        delete     table qachon kirib chiqqan va qancha ball ketgan 
+ball add sahifa excell and qolda
+price add change sahifa
+dashboard 
+user edit
+
+
+xlsx/xls
+
+
+without login_required
+page {
+    clientlar royhati order_by -ball
+}
+qr_code uradigon        3sec onchange js
+
+--------------------------------------------------------------------------------------------
+
+
+
+<--- O'quvchi --->
+name = chr
+last_name = chr
+origin_id = pif unique True
+degree = positiveInteger
+
+<--- added_ball --->
+oquvchi = fk
+time_created = date
+before_degree = Integer
+after_degree = Integer
+
+
+<--- Used_ball --->
+oquvchi = fk
+time_created = date
+before_degree = Integer
+after_degree = Integer
+
+
+<--- Enter_exit --->
+oquvchi = fk
+start_time = date
+end_at = date
+in_out = boolen
+
+
+<--- time price --->
+price = decimal
+

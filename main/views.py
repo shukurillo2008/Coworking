@@ -536,7 +536,7 @@ def pc_st_end(request):
             models.Money.objects.create(pc=pc, time=on_of, money=total_cost)
             pc.status = 2
             pc.save()
-            messages.success(request, 'Done')
+            messages.success(request, f'costs : {round(total_cost, 2)}')
             return redirect('pc_list_url')
         except:
             on_of = models.OnOfTime.objects.create(
@@ -546,7 +546,7 @@ def pc_st_end(request):
                 )
             pc.status = 1
             pc.save()
-            messages.success(request, 'Done')
+            messages.success(request, 'Started')
             return redirect('pc_list_url')
     except:
 

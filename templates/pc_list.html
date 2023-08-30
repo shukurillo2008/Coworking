@@ -2,6 +2,34 @@
 {% load static %}
 {% block content %}
 
+
+<!-- Your existing modal code -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                {% for message in messages %}
+                <h1 class="modal-title" id="exampleModalLabel" style="font-size: xx-large;">{{message}}</h1>
+                {% endfor %}
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+        myModal.show();
+    });
+</script>
+{% endif %}
+
+
 <div class="row">
     {% for pc in pc  %}
     <div class="col-xl-4">
@@ -19,7 +47,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="pc_number" value="{{pc.number}}">
                             <input type="hidden" name="is_student" value="true">
-                            <button class="btn btn-primary m-t-sm" style="background-color: yellowgreen; margin: 5px;">Student</button>
+                            <button class="btn btn-primary m-t-sm" style="background-color: yellowgreen; margin: 5px;" >Student</button>
                         </form>
                         <form action="{% url 'pc_on_off_url' %}" method="post">
                             {% csrf_token %}
@@ -45,6 +73,7 @@
     </div>
     {% endfor %}
 </div>
+
 
 
 {% endblock %}
