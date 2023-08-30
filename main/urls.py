@@ -20,4 +20,5 @@ urlpatterns = [
     path('students/outed/', views.outed_student_list, name='outed_students_url'),
     path('download/outed/table', views.outed_student_table_make, name='outed_student_table_url'),
     path('pc/list', views.pc_list, name = 'pc_list_url'),
+    path('pc/on-off/', views.pc_st_end, name = 'pc_on_off_url')
 ]

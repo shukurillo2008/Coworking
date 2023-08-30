@@ -521,11 +521,11 @@ def pc_st_end(request):
     is_student = request.POST.get('is_student')
     
     try:
-        pc = models.Pc.objects.get(number=pc_number)
-        if is_student == 'True':
-            time_price = models.TimeMoney.objects.get(is_student=True)
+        pc = models.Pc.objects.get(number=int(pc_number))
+        if is_student == 'true':
+            time_price = models.TimeMoney.objects.get(for_student=True)
         else:
-            time_price = models.TimeMoney.objects.get(is_student=False)     
+            time_price = models.TimeMoney.objects.get(for_student=False)     
         try:
             on_of = models.OnOfTime.objects.get(pc=pc, off_time__isnull=True)
             on_of.off_time = timezone.now()

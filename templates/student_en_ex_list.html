@@ -61,9 +61,9 @@
                         <tr>
                             <td><a href="{% url 'student_edit_url' enexit.student.origin_id%}">{{enexit.student.origin_id}}</a></td>
                             <td>{{enexit.student.first_name}} {{enexit.student.last_name}}</td>
-                            <td>{{enexit.enter_time}}</td>
+                            <td>{{enexit.enter_time|date:"d.m.Y H:i"}}</td>
                             {% if enexit.exit_time %}
-                            <td>{{enexit.exit_time}}</td>
+                            <td>{{enexit.exit_time|date:"d.m.Y H:i"}}</td>
                             {% else %}
                             <td>Binoda</td>
                             {% endif %}
