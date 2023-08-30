@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row">
+    {% for pc in pc  %}
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title d-flex justify-content-center" style="font-size: xx-large;"> {{pc.number}} </h1>
+
+                <div class="d-flex justify-content-center">
+                    <h4>status:</h4>
+                    <h4 id="Status{{pc.number}}">{% if pc.status == 1 %} Band {% elif pc.status == 2 %} Bo'sh {% else %} Buzilgan {% endif %}</h4>
+                </div><hr>
+                {% if pc.status == 2 %}
+                    <div class="d-flex justify-content-center">
+                        <form action="{% url 'pc_on_off_url' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="pc_number" value="{{pc.number}}">
+                            <input type="hidden" name="is_student" value="true">
+                            <button class="btn btn-primary m-t-sm" style="background-color: yellowgreen; margin: 5px;">Student</button>
+                        </form>
+                        <form action="{% url 'pc_on_off_url' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="pc_number" value="{{pc.number}}">
+                            <button type="submit" class="btn btn-primary m-t-sm" style="margin: 5px;">Stranger</button>
+                        </form>
+                    </div>
+                {% elif pc.status == 1 %}
+                <div class="d-flex justify-content-center">
+                    <form action="{% url 'pc_on_off_url' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="pc_number" value="{{pc.number}}">
+                        <button type="submit" class="btn btn-primary m-t-sm" style="background-color: red; margin: 5px;">OFF</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="d-flex justify-content-center">
+                    <a href="" class="btn btn-primary m-t-sm">O'zgartirish</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

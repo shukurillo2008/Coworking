@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="row">
+    <div class="col">
+        <div class="page-description">
+            <h1>Dashboard</h1>
+        </div>
+    </div>
+</div>
+{% if messages %}
+    {% for message in messages %}
+    {% if message.tags %}
+    <div class="alert alert-{{ message.tags }}" role="alert">
+        <span> {{ message }} </span>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+{% endif %}
+<div class="row">
+    <!-- First row of widgets -->
+    <div class="col-xl-4">
+        <div class="card widget widget-stats">
+            <div class="card-body">
+                <div class="widget-stats-container d-flex">
+                    <div class="widget-stats-icon widget-stats-icon-warning">
+                        <i class="material-icons-outlined">groups</i>
+                    </div>
+                    <div class="widget-stats-content flex-fill">
+                        <span class="widget-stats-title">Students</span>
+                        <span class="widget-stats-amount" id="studentsDisplay"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card widget widget-stats">
+            <div class="card-body">
+                <div class="widget-stats-container d-flex">
+                    <div class="widget-stats-icon widget-stats-icon-primary">
+                        <i class="material-icons-outlined">group</i>
+                    </div>
+                    <div class="widget-stats-content flex-fill">
+                        <span class="widget-stats-title">Visits Today</span>
+                        <span class="widget-stats-amount" id="visitsTodayDisplay"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card widget widget-stats">
+            <div class="card-body">
+                <div class="widget-stats-container d-flex">
+                    <div class="widget-stats-icon widget-stats-icon-danger">
+                        <i class="material-icons-outlined">workspace_premium</i>
+                    </div>
+                    <div class="widget-stats-content flex-fill">
+                        <span class="widget-stats-title">Used Degrees Today</span>
+                        <span class="widget-stats-amount" id="usedDegreeDisplay"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Second row of widgets -->
+    <div class="col-xl-4">
+        <div class="card widget widget-stats">
+            <div class="card-body">
+                <div class="widget-stats-container d-flex">
+                    <div class="widget-stats-icon widget-stats-icon-warning">
+                        <i class="material-icons-outlined">account_balance</i>
+                    </div>
+                    <div class="widget-stats-content flex-fill">
+                        <span class="widget-stats-title">Not used degrees</span>
+                        <span class="widget-stats-amount" id="notUsedDegreeDisplay"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card widget widget-stats">
+            <div class="card-body">
+                <div class="widget-stats-container d-flex">
+                    <div class="widget-stats-icon widget-stats-icon-primary">
+                        <i class="material-icons-outlined">groups</i>
+                    </div>
+                    <div class="widget-stats-content flex-fill">
+                        <span class="widget-stats-title">Visits All time</span>
+                        <span class="widget-stats-amount" id="visitsAllDisplay"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card widget widget-stats">
+            <div class="card-body">
+                <div class="widget-stats-container d-flex">
+                    <div class="widget-stats-icon widget-stats-icon-danger">
+                        <i class="material-icons-outlined">workspace_premium</i>
+                    </div>
+                    <div class="widget-stats-content flex-fill">
+                        <span class="widget-stats-title">Used Degrees All time</span>
+                        <span class="widget-stats-amount" id="usedDegreeAllDisplay"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--  -->
+    <div class="col-xl-4">
+        <div class="card widget widget-stats">
+            <div class="card-body">
+                <div class="widget-stats-container d-flex">
+                    <div class="widget-stats-icon widget-stats-icon-danger">
+                        <i class="material-icons-outlined">workspace_premium</i>
+                    </div>
+                    <div class="widget-stats-content flex-fill">
+                        <span class="widget-stats-title">Out visits</span>
+                        <span class="widget-stats-amount" id="outVisitsDisplay"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card widget widget-stats">
+            <div class="card-body">
+                <div class="widget-stats-container d-flex">
+                    <div class="widget-stats-icon widget-stats-icon-danger">
+                        <i class="material-icons-outlined">workspace_premium</i>
+                    </div>
+                    <div class="widget-stats-content flex-fill">
+                        <span class="widget-stats-title">all time Money</span>
+                        <span class="widget-stats-amount" id="allMoneyDisplay"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-xl-4">
+        <div class="card widget widget-stats">
+            <div class="card-body">
+                <div class="widget-stats-container d-flex">
+                    <div class="widget-stats-icon widget-stats-icon-danger">
+                        <i class="material-icons-outlined">workspace_premium</i>
+                    </div>
+                    <div class="widget-stats-content flex-fill">
+                        <span class="widget-stats-title">Today Money</span>
+                        <span class="widget-stats-amount" id="MoneyDisplay"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function formatNumber(number) {
+        if (number >= 1000000000) { // If greater than or equal to 1 billion
+            return (number / 1000000000).toFixed(1) + 'B';
+        } else if (number >= 1000000) { // If greater than or equal to 1 million
+            return (number / 1000000).toFixed(1) + 'M';
+        } else if (number >= 1000) { // If greater than or equal to 1 thousand
+            return (number / 1000).toFixed(1) + 'k';
+        }
+        return number.toLocaleString(); // No abbreviation needed
+    }
+
+    // Replace these with your actual numbers
+    const students = {{students}} ;
+    const visits_today = {{visits_today}};
+    const used_degree = {{used_degree}};
+    const not_used_degree = {{not_used_degree}};
+    const visits_all = {{visits_all}};
+    const used_degree_all = {{used_degree_all}};
+    const visits_out = {{visits_out}};
+    const all_money = {{all_money}};
+    const money = {{money}};
+
+    const studentsFormatted = formatNumber(students);
+    document.getElementById('studentsDisplay').textContent = studentsFormatted;
+
+    const visitsTodayFormatted = formatNumber(visits_today);
+    document.getElementById('visitsTodayDisplay').textContent = visitsTodayFormatted;
+
+    const usedDegreeFormatted = formatNumber(used_degree);
+    document.getElementById('usedDegreeDisplay').textContent = usedDegreeFormatted;
+
+    const notUsedDegreeFormatted = formatNumber(not_used_degree);
+    document.getElementById('notUsedDegreeDisplay').textContent = notUsedDegreeFormatted;
+
+    const visitsAllFormatted = formatNumber(visits_all);
+    document.getElementById('visitsAllDisplay').textContent = visitsAllFormatted;
+
+    const usedDegreeAllFormatted = formatNumber(used_degree_all);
+    document.getElementById('usedDegreeAllDisplay').textContent = usedDegreeAllFormatted;
+
+    const outVisitsFormatted = formatNumber(visits_out);
+    document.getElementById('outVisitsDisplay').textContent = outVisitsFormatted;
+
+    const allMoneyFormatted = formatNumber(all_money);
+    document.getElementById('allMoneyDisplay').textContent = allMoneyFormatted;
+
+    const MoneyFormatted = formatNumber(money);
+    document.getElementById('MoneyDisplay').textContent = MoneyFormatted;
+</script>
+
+{% endblock %}
+
+<!-- <a href="{% url 'worker_edit_url' worker.id %}"></a> -->

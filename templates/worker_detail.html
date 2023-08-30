@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="row">
+    <div class="col">
+        <div class="page-description">
+            <h3>{{worker.username}}</h3>
+            <h4>ID : {{worker.id}}</h4>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div class="row m-t-lg">
+                                <div class="col-md">
+                                    <label for="settingsInputFirstName" class="form-label"> Username</label>
+                                    <input type="text" class="form-control" value="{{worker.username}}" name="username">
+                                </div>
+                                <div class="col-md">
+                                    <label for="settingsInputLastName" class="form-label">Password</label>
+                                    <input type="text" class="form-control" name="password">
+                                </div>
+                            </div>
+                            <div class="row m-t-lg">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary m-t-sm">Update</button>
+                                </div>
+                            </div>
+
+                        </form>
+                        <div class="col">
+                            <form action="{% url 'worker_delete_url' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{worker.id}}" name="worker_id">
+                                <button type="submit" class="btn btn-danger m-t-sm">Delete</button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
