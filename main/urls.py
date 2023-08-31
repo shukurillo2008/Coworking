@@ -20,5 +20,9 @@ urlpatterns = [
     path('students/outed/', views.outed_student_list, name='outed_students_url'),
     path('download/outed/table', views.outed_student_table_make, name='outed_student_table_url'),
     path('pc/list', views.pc_list, name = 'pc_list_url'),
-    path('pc/on-off/', views.pc_st_end, name = 'pc_on_off_url')
+    path('pc/on-off/', views.pc_st_end, name = 'pc_on_off_url'),
+    path('pc/create/', views.add_pc, name = 'add_pc_url'),
+    path('price/change/money', views.change_price_money, name = 'change_price_money_url'),
+    path('pc/delete', views.delete_pc, name = 'delete_pc_url'),
+    path('pc/edit/', views.edit_pc, name = 'edit_pc_url')
 ]

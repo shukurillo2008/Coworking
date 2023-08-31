@@ -3,7 +3,80 @@
 {% block content %}
 
 
-<!-- Your existing modal code -->
+<style>
+    .settings-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+</style>
+
+{% for pc in pc  %}
+<div class="modal fade" id="exampleModal{{pc.number}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">PC number {{pc.number}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+                {% if pc.status != 1 %}
+                    {% if pc.status == 3 %}
+                    <form action="{% url 'edit_pc_url' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{pc.number}}" name="pc_number">
+                        <button type="submit" class="btn btn-primary" style="margin: 5px;">Togrilandi</button>
+                    </form>
+                    {% else %}
+                    <form action="{% url 'edit_pc_url' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{pc.number}}" name="pc_number">
+                        <button type="submit" class="btn btn-primary" style="margin: 5px;">Buzildi</button>
+                    </form>
+                    {% endif %}
+                    <form action="{% url 'delete_pc_url' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{pc.number}}" name="pc_number">
+                        <button type="submit" class="btn btn-danger" style="margin: 5px;">Delete</button>
+                    </form>
+                {% else %}
+                    <h3>PC ni ochirib kegin urinib koring</h3>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
+
+<div class="modal fade" id="exampleModaladd" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Pc</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'add_pc_url' %}" method="post">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="number" placeholder="Add number of new pc: " class="form-control" name="pc_number">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -29,11 +102,21 @@
 </script>
 {% endif %}
 
+<div class="row d-flex justify-content-end" >
+    <div class="col d-flex justify-content-end ">
+        <div>
+            <button type="submit" class="btn btn-primary m-t-sm" data-bs-toggle="modal" data-bs-target="#exampleModaladd">+ add Pc</button>
+        </div>
+    </div>
+</div><br>
 
 <div class="row">
     {% for pc in pc  %}
     <div class="col-xl-4">
-        <div class="card">
+        <div class="card">  
+            <button class="settings-button" data-bs-toggle="modal" data-bs-target="#exampleModal{{pc.number}}">
+                <i class="material-icons">settings</i> <!-- Replace with the appropriate icon class -->
+            </button>
             <div class="card-body">
                 <h1 class="card-title d-flex justify-content-center" style="font-size: xx-large;"> {{pc.number}} </h1>
 
@@ -65,7 +148,7 @@
                 </div>
                 {% else %}
                 <div class="d-flex justify-content-center">
-                    <a href="" class="btn btn-primary m-t-sm">O'zgartirish</a>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{pc.number}}"> O'zgartirish</button>
                 </div>
                 {% endif %}
             </div>

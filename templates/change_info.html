@@ -65,7 +65,7 @@
                             {% csrf_token %}
                             <div class="row m-t-lg">
                                 <div class="col-md">
-                                    <label for="settingsInputFirstName" class="form-label">Price per Hour</label>
+                                    <label for="settingsInputFirstName" class="form-label">Price per Hour On Degree</label>
                                     <input type="number" class="form-control"  name="price" value="{{price.price}}" required>
                                 </div>
                             </div>
@@ -75,6 +75,42 @@
                         </form>
                     </div>
                 </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{% url 'change_price_money_url' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row m-t-lg">
+                                <div class="col-md">
+                                    <label for="settingsInputFirstName" class="form-label">Price per Hour On Money For Students</label>
+                                    <input type="number" class="form-control"  name="price" value="{{price_for_students.price}}" required>
+                                    <input type="hidden" name="for_student" value="true">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary m-t-sm">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{% url 'change_price_money_url' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row m-t-lg">
+                                <div class="col-md">
+                                    <label for="settingsInputFirstName" class="form-label">Price per Hour on Money</label>
+                                    <input type="number" class="form-control"  name="price" value="{{price_for_strangers.price}}" required>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary m-t-sm">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
         </div>
     </div>
 </div>

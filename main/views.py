@@ -365,59 +365,65 @@ def enter_exit(request):
         if origin_id:
             try:
                 student = models.Student.objects.get(origin_id=origin_id)
-                try:
-                    enterexit = models.EnterExit.objects.get(student=student, in_out=False)
-                    price = models.TimePrice.objects.last()
-                    enterexit.in_out = True
-                    enterexit.exit_time = timezone.now()
-                    enterexit.save()
-                    
-                    time_difference = enterexit.exit_time - enterexit.enter_time
-                    time_hours = time_difference.total_seconds() / 3600
-                    
-                    total_cost = price.price * Decimal(str(time_hours))
-                    student.degree -= total_cost
+                if student.is_student:
+                    try:
+                        enterexit = models.EnterExit.objects.get(student=student, in_out=False)
+                        price = models.TimePrice.objects.last()
+                        enterexit.in_out = True
+                        enterexit.exit_time = timezone.now()
+                        enterexit.save()
+                        
+                        time_difference = enterexit.exit_time - enterexit.enter_time
+                        time_hours = time_difference.total_seconds() / 3600
+                        
+                        total_cost = price.price * Decimal(str(time_hours))
+                        student.degree -= total_cost
 
-                    send_degree = None
+                        send_degree = None
 
-                    if student.degree < 0:
-                        send_degree = student.degree
+                        if student.degree < 0:
+                            send_degree = student.degree
 
-                    models.UsedDegree.objects.create(
-                        student = student,
-                        enter_exit = enterexit,
-                        before_degree = models.Student.objects.get(origin_id=origin_id).degree,
-                        used_degree = total_cost,
-                        after_degree = student.degree,
-                    )
-
-                    student.save()
-                    
-                    context['student'] = student
-                    return JsonResponse({
-                        'last_name': student.last_name,
-                        "first_name": student.first_name,
-                        'status': "Chiqdi",
-                        'degree':  f'{total_cost:.2f}',
-                        'send_degree': send_degree
-                    })
-                except:
-
-                    status = ''
-                    if student.degree >= models.TimePrice.objects.last().price:
-                        models.EnterExit.objects.create(
+                        models.UsedDegree.objects.create(
                             student = student,
-                            enter_time = timezone.now(),
-                            in_out = False,
+                            enter_exit = enterexit,
+                            before_degree = models.Student.objects.get(origin_id=origin_id).degree,
+                            used_degree = total_cost,
+                            after_degree = student.degree,
                         )
-                        status = 'Kirdi'
-                    else:
-                        status = 'yetarli bal mavjud emas' 
+
+                        student.save()
+                        
+                        context['student'] = student
+                        return JsonResponse({
+                            'last_name': student.last_name,
+                            "first_name": student.first_name,
+                            'status': "Chiqdi",
+                            'degree':  f'{total_cost:.2f}',
+                            'send_degree': send_degree
+                        })
+                    except:
+
+                        status = ''
+                        if student.degree >= models.TimePrice.objects.last().price:
+                            models.EnterExit.objects.create(
+                                student = student,
+                                enter_time = timezone.now(),
+                                in_out = False,
+                            )
+                            status = 'Kirdi'
+                        else:
+                            status = 'yetarli bal mavjud emas' 
+                        return JsonResponse({
+                            'last_name': student.last_name,
+                            "first_name": student.first_name,
+                            "status": status,
+                        })
+                else:
+                    # messages.error(request, 'You are not student anymore')
                     return JsonResponse({
-                        'last_name': student.last_name,
-                        "first_name": student.first_name,
-                        "status": status,
-                    })
+                            "status": 'You are not student anymore',
+                        })
             except:
                 messages.error(request, 'Not Found 404')
                 return redirect('error_url')
@@ -493,10 +499,38 @@ def change_components(request):
 
     context = {
         'price':models.TimePrice.objects.last(),
-        'company':company
+        'company':company,
+        'price_for_students': models.TimeMoney.objects.get(for_student=True),
+        'price_for_strangers': models.TimeMoney.objects.get(for_student=False)
     }
 
     return render(request, 'change_info.html', context)
+
+
+@login_required(login_url='login_url')
+def change_price_money(request):
+    price = request.POST.get('price')
+    for_student = request.POST.get('for_student')
+    try:
+        if for_student == 'true':
+            price_time = models.TimeMoney.objects.get(for_student = True)
+        else:
+            price_time = models.TimeMoney.objects.get(for_student = False)
+        price_time.price = price
+        price_time.save()
+        messages.success(request, 'Saved successfully!')
+        return redirect('index_url')
+    except:
+        if for_student == 'true':
+            type_price = True
+        else:
+            type_price = False
+        models.TimeMoney.objects.create(
+            price = price,
+            for_student = type_price
+        )
+        messages.success(request, 'created')
+        return redirect('index_url')
 
 
 @login_required(login_url='login_url')
@@ -507,7 +541,7 @@ def company(request):
 
 @login_required(login_url='login_url')
 def pc_list(request):
-    pc = models.Pc.objects.all()
+    pc = models.Pc.objects.all().order_by('number')
     context = {
         "pc": pc
     }
@@ -554,21 +588,33 @@ def pc_st_end(request):
         return redirect('error_url')
 
 
+@login_required(login_url='login_url')
 def add_pc(request):
-    number = request.POST.get('number')
+    number = request.POST.get('pc_number')
     models.Pc.objects.create(number=number)
-    return JsonResponse({
-        'success': 'created'
-    })
+    messages.success(request, 'Added')
+    return redirect('pc_list_url')
 
 
+@login_required(login_url='login_url')
 def delete_pc(request):
-    number = request.POST.get('number')
+    number = request.POST.get('pc_number')
     models.Pc.objects.get(number=number).delete()
 
     return redirect('pc_list_url')
 
 
+def edit_pc(request):
+    number = request.POST.get('pc_number')
+    pc = models.Pc.objects.get(number=number)
+    if pc.status == 3:
+        pc.status = 2
+        pc.save()
+    else:
+        pc.status = 3
+        pc.save()
+    messages.success(request, 'Done')
+    return redirect('pc_list_url')
 
 
 
