@@ -201,68 +201,76 @@ def create_student(request):
 @login_required(login_url='login_url')
 def create_student_by_file(request):
     file = request.FILES.get("file")
-    f = models.Files.objects.create(file=file)
     
-    if f.file.name.endswith('xls'):
-        book = xlrd.open_workbook(file_contents=f.file.read())
-        sh = book.sheet_by_index(0)
+    if not file:
+        messages.error(request, 'No file uploaded.')
+        return redirect("students_url")
 
-        for row_num in range(1, sh.nrows):
+    if file.name.endswith('.xls'):
+        try:
+            book = xlrd.open_workbook(file_contents=file.read())
+            sheet = book.sheet_by_index(0)
 
-            row = sh.row_values(row_num)
-            origin_id = row[0]
-            first_name = row[1]
-            last_name = row[2]
-            degree = row[3]
-            is_student = row[4]
-            
-            try:
-                student = models.Student.objects.get(origin_id=origin_id)
-                student.first_name = first_name
-                student.last_name = last_name
-                if degree:
-                    student.degree = degree
-                if is_student == "+":
-                    student.is_student = True
-                elif is_student == "-":
-                    student.is_student = False
-                student.save()
-            except:
-                if origin_id and first_name and last_name: 
-                    models.Student.objects.create(first_name = first_name, last_name = last_name, origin_id = origin_id, degree = degree)
-        messages.success(request, 'done')
+            for row_num in range(1, sheet.nrows):
+                row = sheet.row_values(row_num)
+                origin_id, first_name, last_name, degree, is_student = row[:5]
 
-    elif f.file.name.endswith('.xlsx'):
-        book = openpyxl.load_workbook(f.file)
-        sh = list(book.worksheets[0].iter_rows(values_only=True))
-        
-        for up, row in enumerate(sh):
-            if up == 0:
-                continue
-            
-            origin_id = row[0]
-            
-            if isinstance(origin_id, int):
                 try:
                     student = models.Student.objects.get(origin_id=origin_id)
-                    student.first_name = row[1]
-                    student.last_name = row[2]
-                    if row[3] is not None: 
-                        student.degree = row[3]
-
-                    if row[4] == '+':
-                        student.is_student = True
-                    elif row[4] == '-':
-                        student.is_student = False
+                    student.first_name = first_name
+                    student.last_name = last_name
+                    if degree is not None:
+                        student.degree = degree
+                    student.is_student = not bool(is_student)
                     student.save()
-                except:
-                    if row[3] is not None and row[1] is not None and row[2] is not None:
-                        models.Student.objects.create(first_name=row[1], last_name=row[2], origin_id=origin_id, degree=row[3])
+                except models.Student.DoesNotExist:
+                    if origin_id and first_name and last_name:
+                        models.Student.objects.create(
+                            first_name=first_name,
+                            last_name=last_name,
+                            origin_id=origin_id,
+                            degree=degree,
+                        )
 
-        messages.success(request, 'done')
+            messages.success(request, 'Import from .xls file successful')
+        except Exception as e:
+            messages.error(request, f'Error importing from .xls file: {str(e)}')
+
+    elif file.name.endswith('.xlsx'):
+        try:
+            book = openpyxl.load_workbook(file)
+            sheet = list(book.active.iter_rows(values_only=True))
+
+            for row_num, row in enumerate(sheet):
+                if row_num == 0:
+                    continue
+                origin_id, first_name, last_name, degree, is_student = row[:5]
+
+                if isinstance(origin_id, int):
+                    try:
+                        student = models.Student.objects.get(origin_id=origin_id)
+                        student.first_name = first_name
+                        student.last_name = last_name
+                        if degree is not None:
+                            student.degree = degree
+                        student.is_student = not bool(is_student)
+                        student.save()
+                    except models.Student.DoesNotExist:
+                        if degree is not None and first_name and last_name:
+                            models.Student.objects.create(
+                                first_name=first_name,
+                                last_name=last_name,
+                                origin_id=origin_id,
+                                degree=degree,
+                            )
+
+            messages.success(request, 'Import from .xlsx file successful')
+        except Exception as e:
+            messages.error(request, f'Error importing from .xlsx file: {str(e)}')
+
     else:
-        messages.error(request, 'file format must be xlsx or xls')
-                        
+        messages.error(request, 'File format must be .xlsx or .xls')
+
     return redirect("students_url")
 
 
@@ -479,29 +487,39 @@ def add_degree(request):
 
 @login_required(login_url='login_url')
 def change_components(request):
-    company = models.CompanyComponent.objects.last()
+    try:
+        company = models.CompanyComponent.objects.last()
+        price = models.TimePrice.objects.last()
+        price_for_students = models.TimeMoney.objects.get(for_student=True)
+        price_for_strangers = models.TimeMoney.objects.get(for_student=False)
+    except:
+        price = None
+        price_for_students = 0
+        price_for_strangers = 0
+
     if request.method == 'POST':
-        try:
-            company_name = request.POST.get('company_name')
-            about = request.POST.get('about')
-            logo = request.FILES.get('logo')
+        company_name = request.POST.get('company_name')
+        about = request.POST.get('about')
+        logo = request.FILES.get('logo')
+
+        if company:
             company.company_name = company_name
-            company.about = about            
-            if logo :
+            company.about = about
+            if logo:
                 company.logo = logo
             company.save()
-        except:
+        else:
             models.CompanyComponent.objects.create(
-                about =about,
-                logo = logo,
-                company_name = company_name
+                about=about,
+                logo=logo,
+                company_name=company_name
             )
 
     context = {
-        'price':models.TimePrice.objects.last(),
-        'company':company,
-        'price_for_students': models.TimeMoney.objects.get(for_student=True),
-        'price_for_strangers': models.TimeMoney.objects.get(for_student=False)
+        'price': price,
+        'company': company,
+        'price_for_students': price_for_students,
+        'price_for_strangers': price_for_strangers
     }
 
     return render(request, 'change_info.html', context)
@@ -570,7 +588,7 @@ def pc_st_end(request):
             models.Money.objects.create(pc=pc, time=on_of, money=total_cost)
             pc.status = 2
             pc.save()
-            messages.success(request, f'costs : {round(total_cost, 2)}')
+            messages.success(request, f"cost : {round(total_cost, 2)} sum")
             return redirect('pc_list_url')
         except:
             on_of = models.OnOfTime.objects.create(

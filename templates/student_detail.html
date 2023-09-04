@@ -9,6 +9,11 @@
             <h3>{{student.first_name}} {{student.last_name}}</h3>
             <h4>ID: {{student.origin_id}}</h4>
             <h4>Degree: {{student.degree}}</h4>
+            {% if student.is_student %}
+            <h4>status : student</h4>
+            {%else%}
+            <h4>status : Outed</h4>
+            {% endif %}
         </div>
     </div>
 </div>
