@@ -52,12 +52,12 @@ def index(request):
         'used_degree_all':used_degree_all,
         'not_used_degree':not_used_degree,
         'workers':worker,
-        'price':models.TimePrice.objects.last(),
+        'price':models.TimePrice.objects.last(),    
         'all_money':all_money,
         'money':money,
         'visits_out':visits_out
     }
-
+    
     return render(request, 'dashboard.html', context)
 
 
@@ -551,7 +551,6 @@ def change_price_money(request):
         return redirect('index_url')
 
 
-@login_required(login_url='login_url')
 def company(request):
     company = models.CompanyComponent.objects.last()
     return {'objects': company}
