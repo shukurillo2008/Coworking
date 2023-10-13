@@ -286,7 +286,7 @@ def student_table_make(request):
     ws.append(columns)
 
     for student in students:
-        row = [student.origin_id, student.first_name, student.last_name, str(student.degree), '+' if student.is_student == True else "-"]
+        row = [student.origin_id, student.first_name, student.last_name, str(student.degree)]
         ws.append(row)
 
     wb.save(response)
